@@ -321,6 +321,7 @@
   \fi
   \ifqdissertation@font@sans
     \RequirePackage[default]{sourcesanspro}%
+    \RequirePackage{newtxmath}%
     \renewcommand{\familydefault}{\sfdefault}%
   \fi
   \ifqdissertation@font@serif
@@ -453,6 +454,8 @@
       \fi
     \fi
   \fi
+  \RequirePackage{unicode-math}%
+  \setmathfont{TeX Gyre Termes Math}%
 \fi
 
 % ------------------------------------------------------------------------------
