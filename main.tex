@@ -200,13 +200,13 @@
 % then frontlists: TOC, List of Figures, List of Tables, List of Algorithms,
 % List of Acronyms (if acronyms.tex defines \newacronym).
 % Add \dedication{...} and \makededication separately if desired.
+
+% This is the abstract: a short, self-contained summary of the dissertation.
+% It should state the problem, methods, and main results so that a reader
+% can understand the scope without reading the full document. Replace with
+% your own abstract.
 \maketitle{%
-  % Abstract: typically 200--300 words. State problem, methods, and main results.
-  This is the abstract: a short, self-contained summary of the dissertation.
-  It should state the problem, methods, and main results so that a reader
-  can understand the scope without reading the full document. Replace with
-  your own abstract.
-  
+  % Abstract: typically 200--300 words. State problem, methods, and main results.  
   Simultaneous Localisation and Mapping (SLAM) is the fundamental robotics 
   problem of estimating both the pose of a mobile robot and a map of its surroundings. 
   This enables a robot to then make and execute tasks such as planning or navigation. 
@@ -224,7 +224,7 @@
   S-Graphs+ is geometry based, Hydra adopts a Spatial approach while Clio uses a Task-Driven approach.
 
   The evaluation revealed that S-Graphs+ struggled in cluttered environments, as objects like desks/beds 
-  often prevented the method to incorrectly identify wall planes, leading to incorrect classification of rooms. 
+  often prevented the method to identify wall planes, leading to incorrect classification of rooms. 
   As well as this, S-Graphs+ is a structural method only, meaning no semantic or object level information is considered. 
   Hydra performed well at identifying objects, with a 65\% recall rate, but struggled to 
   segment all rooms in the scene with an 80\% recall rate, especially struggling with smaller rooms like bathrooms. Clio excelled at 
