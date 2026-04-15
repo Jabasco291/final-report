@@ -192,6 +192,9 @@
 \copyrightholder{Your Full Name}
 \licenseyear{2026}
 
+%add glossaries
+\makeglossaries
+
 \begin{document}
 
 \frontmatter
@@ -207,20 +210,19 @@
 % your own abstract.
 \maketitle{%
   % Abstract: typically 200--300 words. State problem, methods, and main results.  
-  Simultaneous Localisation and Mapping (SLAM) is the fundamental robotics 
+  \gls{slam}Simultaneous Localisation and Mapping (SLAM) is the fundamental robotics 
   problem of estimating both the pose of a mobile robot and a map of its surroundings. 
   This enables a robot to then make and execute tasks such as planning or navigation. 
-  Recent advancements addressing the SLAM problem use a graph-based representation of a 
+  Recent advancements addressing the \gls{slam} problem use a graph-based representation of a 
   scene that integrates metric (occupancy) and semantic (classes) estimates, along with 
   hierarchical relationships connecting different aspects of the scene (e.g. an object belongs to a room). 
-  This representation, known as a 3D Dynamic Scene Graph (DSG), encompasses actionable 
+  This representation, known as a \gls{dsg}, encompasses actionable 
   information that aids in robot planning and decision-making, but also in supporting 
   architecture-related tasks such as renovation, inventory and remote building visualisation.
   
-  This project focuses on deploying and evaluating 3 state of the art DSG methods in a 
+  This project focuses on deploying and evaluating 3 state of the art \gls{dsg} methods in a 
   simulated environment: Hydra \cite{hydra}, Clio \cite{clio} and S-Graphs+ \cite{s_graphs_plus}. The best performing method 
-  was then used to process real world data and create a DSG of the Human Centred Computing 
-  and Robotics (HCCR) laboratory. Each method uses a different approach to creating the DSG: 
+  was then used to process real world data and create a \gls{dsg} of the \gls{hccr} laboratory. Each method uses a different approach to creating the \gls{dsg}: 
   S-Graphs+ is geometry based, Hydra adopts a Spatial approach while Clio uses a Task-Driven approach.
 
   The evaluation revealed that S-Graphs+ struggled in cluttered environments, as objects like desks/beds 

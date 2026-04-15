@@ -29,13 +29,13 @@ This chapter introduces the dissertation. It outlines the motivation and context
 % %F Clarify whether this applies to all cases.
 % \citet{example-book} provide a longer treatment; multiple citations: \citep{example-paper,example-conf}. You can link to other chapters (e.g.\@ Chapter~\ref{ch2}, Section~\ref{sec:objectives}) and to figures (Fig.~\ref{fig:demo}). The class provides \url{https://example.com} and \href{https://example.com}{link text} for URLs and hyperlinks.
 
-Simultaneous Localisation and Mapping (SLAM) is the fundamental problem in robotics of an online robot making a map of its surroundings (mapping), whilst simultaneously tracking its own position (localisation). This enables actions such as path planning. This presents a chicken and egg problem, you need the map to calculate position, yet need the position to build the map.
+\gls{slam} is the fundamental problem in robotics of an online robot making a map of its surroundings (mapping), whilst simultaneously tracking its own position (localisation). This enables actions such as path planning. This presents a chicken and egg problem, you need the map to calculate position, yet need the position to build the map.
 
-Classical approaches to the SLAM problem represent the environment using only metric terms such as occupancy grids, which captures the raw geometry without any structural meaning. Whilst this is enough for basic navigation, increasingly advanced robotics require a more structured understanding of the scene in order to execute higher-level functions. This is particularly apparent in architecture contexts, where tasks like inventorying or remote visualisation require an understanding of spatial structure.
+Classical approaches to the \gls{slam} problem represent the environment using only metric terms such as occupancy grids, which captures the raw geometry without any structural meaning. Whilst this is enough for basic navigation, increasingly advanced robotics require a more structured understanding of the scene in order to execute higher-level functions. This is particularly apparent in architecture contexts, where tasks like inventorying or remote visualisation require an understanding of spatial structure.
 
-Recent advancements in SLAM research use a graph-based representation of the scene that integrates metric(occupancy) and semantic (classes) estimates, along with hierarchical relationships connecting different aspects of the scene. For example, an object belongs to a room. This approach, known as a 3D Dynamic Scene Graph (DSG), enables it to have a broader range of higher-level tasks, such as responding to natural language commands like ‘pickup the red pen’, or architecture-related tasks mentioned above.
+Recent advancements in \gls{slam} research use a graph-based representation of the scene that integrates metric(occupancy) and semantic (classes) estimates, along with hierarchical relationships connecting different aspects of the scene. For example, an object belongs to a room. This approach, known as a \gls{dsg}, enables it to have a broader range of higher-level tasks, such as responding to natural language commands like ‘pickup the red pen’, or architecture-related tasks mentioned above.
 
-Different DSG methods use different approaches to how the scene is processed. This means they differ in how the scene is constructed and labelled. This proposes 3 core research questions: Which achieves the best accuracy, which is the most practical for deployment, and which creates the richest semantic understanding? This dissertation addresses these questions through a side-by-side evaluation of 3 state-of-the-art methods, resulting in deploying the best-performing method on real-world data.
+Different \gls{dsg} methods use different approaches to how the scene is processed. This means they differ in how the scene is constructed and labelled. This proposes 3 core research questions: Which achieves the best accuracy, which is the most practical for deployment, and which creates the richest semantic understanding? This dissertation addresses these questions through a side-by-side evaluation of 3 state-of-the-art methods, resulting in deploying the best-performing method on real-world data.
 
 % -----------------------------------------------------------------------------
 % Aims and objectives (typical second section)
@@ -45,14 +45,14 @@ Different DSG methods use different approaches to how the scene is processed. Th
 \section{Aims and objectives}\label{sec:objectives}
 
 %State the aim of your project and break it down into objectives. The following is a placeholder list (enumitem package: custom labels).
-The main aim of this project was to compare how 3 state-of-the-art methods perform according to different metrics, which would allow a best-performing to be selected to create a DSG of the HCCR laboratory.
+The main aim of this project was to compare how 3 state-of-the-art methods perform according to different metrics, which would allow a best-performing to be selected to create a \gls{dsg} of the \gls{hccr} laboratory.
 The project was broken down into 4 clear objectives:
 
 \begin{enumerate}[label=\textbf{O\arabic*:}, leftmargin=*]
   \item Deploy all 3 methods on example data
   \item Deploy methods on custom rosbag and store results
   \item Evaluate results and determine which is the best-performing method
-  \item Use best-performing method on real-world data to generate a DSG of the Human Centred Computing and Robotics (HCCR) laboratory
+  \item Use best-performing method on real-world data to generate a \gls{dsg} of the \gls{hccr} laboratory
 \end{enumerate}
 
 % When you need mathematics, use amsmath and mathtools. Example:
@@ -86,9 +86,9 @@ The project was broken down into 4 clear objectives:
     \begin{itemize}
       \item Enabled a systematic comparison and selection of the best-performing method
     \end{itemize}
-  \item \textbf{Deployed best-performing method on real-world data captured in the HCCR laboratory}
+  \item \textbf{Deployed best-performing method on real-world data captured in the \gls{hccr} laboratory}
     \begin{itemize}
-      \item Generated a DSG of the scene and demonstrating the practical application of the method in a real-world context
+      \item Generated a \gls{dsg} of the scene and demonstrating the practical application of the method in a real-world context
     \end{itemize}
 \end{itemize}
 % Summarise the main contributions of the dissertation. You can use a short list and refer to a figure or table. The class provides restyled \texttt{quote} and \texttt{quotation} environments (smaller type, indents):

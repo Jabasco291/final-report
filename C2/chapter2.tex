@@ -18,11 +18,11 @@ This chapter provides the background needed to understand the project: the wider
 \section{Context}\label{sec:context}
 % Wider context, domain, motivation. Optional subsections: stakeholders,
 % constraints, assumptions.
-Autonomous robots operating in dynamic environments require rich spatial representations to perform high-level tasks. Recent advancements in this topic have led to Dynamic Scene Graphs (DSGs) emerging as a way to build a hierarchical representation of a world scene, a key example being Hydra \cite{hydra}. These scene graphs are split up into different layers, which each represent different aspects of the scene. For example, room and object layers contain information about specific detected rooms and objects like their position and semantic label. Layers are connected in a hierarchical structure which reflects the structure of the environment. For example, building nodes contain floor nodes, which contain room nodes, which contain object nodes. 
+Autonomous robots operating in dynamic environments require rich spatial representations to perform high-level tasks. Recent advancements in this topic have led to \gls{dsg}s emerging as a way to build a hierarchical representation of a world scene, a key example being Hydra \cite{hydra}. These scene graphs are split up into different layers, which each represent different aspects of the scene. For example, room and object layers contain information about specific detected rooms and objects like their position and semantic label. Layers are connected in a hierarchical structure which reflects the structure of the environment. For example, building nodes contain floor nodes, which contain room nodes, which contain object nodes. 
 
-This structured approach allows a more contextual view of an environment. Giving a robot more context of its surroundings enables them to perform higher-level tasks. One application for this concept is architectural-related tasks. For example, if a robot can detect objects throughout a building, it can then be used to conduct an inventory or specific items like chairs or pens, which can further be adapted to aid in building management. Another benefit could be assisting architects. A DSG produces an abstractable view of a building, which can be used be architects to analyse relational data of the scene to aid them in further development.
+This structured approach allows a more contextual view of an environment. Giving a robot more context of its surroundings enables them to perform higher-level tasks. One application for this concept is architectural-related tasks. For example, if a robot can detect objects throughout a building, it can then be used to conduct an inventory or specific items like chairs or pens, which can further be adapted to aid in building management. Another benefit could be assisting architects. A \gls{dsg} produces an abstractable view of a building, which can be used be architects to analyse relational data of the scene to aid them in further development.
 
-The general pipeline for a DSG method starts with a metric layer, where the respective sensor data is turned into a volumetric or mesh representation, this forms the metric layer of the graph and is the minimum expected for a SLAM solution. Then, the method will analyse the metric layer to extract information about the scene. The way this is extracted depends on the method and graph structure being used. For example, S-Graphs+ \cite{s_graphs_plus} analyses a point cloud to segment walls using the geometry of the scene, whereas Hydra \cite{hydra} uses neural networks to extract objects from RGB-D data. Each layer is constructed using the data of the layers below to eventually build a graph encompassing the whole scene.
+The general pipeline for a \gls{dsg} method starts with a metric layer, where the respective sensor data is turned into a volumetric or mesh representation, this forms the metric layer of the graph and is the minimum expected for a \gls{slam} solution. Then, the method will analyse the metric layer to extract information about the scene. The way this is extracted depends on the method and graph structure being used. For example, S-Graphs+ \cite{s_graphs_plus} analyses a point cloud to segment walls using the geometry of the scene, whereas Hydra \cite{hydra} uses neural networks to extract objects from RGB-D data. Each layer is constructed using the data of the layers below to eventually build a graph encompassing the whole scene.
 
 %\lipsum[3-4]
 
@@ -30,14 +30,14 @@ The general pipeline for a DSG method starts with a metric layer, where the resp
 % Prior solutions, methods, or systems; identify gaps your work addresses.
 % Optional subsections: by theme, chronology, or type (e.g.\@ systems, methods, theory).
 \subsection{S-Graphs+}
-S-Graphs+ jointly models a pose graph and a 3D scene graph using a 4-layer topological graph consisting of Keyframe, Wall, Room and Floor layers. Unlike the other 2 methods, its data input is from a 3D LiDAR sensor, which is pre-filtered and downsampled before processing. Robot odometry (used for SLAM) is estimated either from LiDAR measurements or robot encoders, the method is agnostic to which it comes from.
+S-Graphs+ jointly models a pose graph and a 3D scene graph using a 4-layer topological graph consisting of Keyframe, Wall, Room and Floor layers. Unlike the other 2 methods, its data input is from a 3D LiDAR sensor, which is pre-filtered and downsampled before processing. Robot odometry (used for \gls{slam}) is estimated either from LiDAR measurements or robot encoders, the method is agnostic to which it comes from.
 
-Wall Extraction:
+\paragraph{Wall Extraction}~\\
 
 Sequential RANSAC is applied per keyframe to iteratively detect dominant wall planes. RANSAC works like a voting system to decide which points belong to the same flat surface. Only processing keyframes instead of every point of data collected is vital for computational performance. Analysing consecutive scans would likely result in the same detections, therefore processing per keyframe ensures meaningful changes are captured without processing unnecessary data.
 Extracted walls are transformed into global map coordinates and classified into vertical (walls) and horizontal (floor/ceiling) surfaces using their normal vector orientation. As the robot traverses the scene, the Mahalanobis distance, which is a statistical measure that accounts for uncertainty, is used to detect whether a plane is new or has been previously discovered.
 
-Room Segmentation:
+\paragraph{Room Segmentation}~\\
 
 This method introduces a novel strategy for segmenting rooms, it is split into 2 steps: Free-Space Clustering and Room Extraction
 Free-Space Clustering:
@@ -50,7 +50,7 @@ A depth-first search is used to find isolated islands of connected nodes, which 
 Removed boundary nodes are re-added to maintain full coverage of free-space. This is vital for actions like navigation.
 
 
-Room Extraction:
+\paragraph{Room Extraction}~\\
 
 This step combines identified clusters with detected walls within that cluster to classify room configurations. Wall planes are categorised by their dominant normal direction and the sign of the normal. This allows the system to see which walls face each other and whether they form rooms. Rooms are classified as either 2 or 4 wall rooms. A 4-wall room consists of 2 x and y direction planes near a cluster, which is then verified by checking its width to prevent noise being classified as rooms. If 2 walls surround a cluster, it is either a partially explored room or a corridor-like structure, for which the same verifications are ran. Data association steps include using room centres to identify whether multiple candidates represent the same room. The Mahalanobis distance is also used in cases where a wall might be observed different from different viewpoints.
 Floor Segmentation:
@@ -64,19 +64,17 @@ Hydra combines fast early and mid-level perception processes like local mapping 
 
 The hierarchical graph contains 5 layers: Metric-Semantic 3D Mesh, Objects and Agents, Places, Rooms, Buildings. When compared to S-Graphs+, Hydra [2] represents a much more grounded and actionable representation. The nodes must contain a single parent in the layer above, they can also only connect to adjacent layers, e.g. a chair connects to a room, but not the building. Sibling nodes children are disjoint, meaning furniture in sibling rooms are completely independent of each other. Hydra uses tree decomposition to represent a complex graph as a tree structure by using bags, which contains a set of nodes from the original graph. This stops the complexity exploding with size, bounding it to the most complex local structure for example how many objects in a room.
 
-Layers:
-
-Mesh:
+\paragraph{Mesh}~\\
 
 A 3D mesh is built using Kimera and VoxBlox by maintaining a voxel-based map within an active window around the robot. Each voxel contains information about the free space and a distribution over semantic labels via Kimera’s [citation] Bayesian inference. This map is then converted to a 3D mesh using marching cubes, with a semantic label added to each mesh vertex. Operating within a specified active window is useful for memory usage as it limits the amount of data trying to be processed at once.
 Objects and Agents:
 This layer consists of a robot pose graph obtained using stereo or RGB-D visual inertial odometry. It also segments objects using Euclidean clustering , where vertices with the same semantic label are clustered. Overlapping objects with the same semantic class are merged if the centroid of an object is within another's bounding box.
 
-Places:
+\paragraph{Places}~\\
 
-A Generalised Voronoi Diagram (GVD), represents a skeleton of free-space. It is created using a Brushfire algorithm by expanding from each mesh surface until touching, which becomes a GVD point. Whilst this captures the full shape of the free-space, it is heavy to store due to its voxel representation. So, each voxel is translated to a node with edges to adjacent voxels, groups of nearby nodes are then turned into single “place” nodes which is more memory efficient. Each node contains the position and distance to nearest obstacle from the GVD voxel, as well as the minimum distance to the nearest obstacle of all GVD voxels that the edge passes through. This information is useful for navigation tasks. As the robot traverses the scene, the algorithm is run after every update to merge newly observed data into the graph of places.
+A \gls{gvd}, represents a skeleton of free-space. It is created using a Brushfire algorithm by expanding from each mesh surface until touching, which becomes a \gls{gvd} point. Whilst this captures the full shape of the free-space, it is heavy to store due to its voxel representation. So, each voxel is translated to a node with edges to adjacent voxels, groups of nearby nodes are then turned into single “place” nodes which is more memory efficient. Each node contains the position and distance to nearest obstacle from the \gls{gvd} voxel, as well as the minimum distance to the nearest obstacle of all \gls{gvd} voxels that the edge passes through. This information is useful for navigation tasks. As the robot traverses the scene, the algorithm is run after every update to merge newly observed data into the graph of places.
 
-Rooms:
+\paragraph{Rooms}~\\
 
 To identify rooms, persistent homology is used on the graph of places, each room is then given a semantic label using a neural tree. For the semantic labelling, we don’t have a network to identify rooms like we do for objects. Therefore, the semantics of the room must be inferred using contained objects and prior knowledge. Rooms are identified using a 2 stage process, identifying number of rooms, and assigning places to rooms via flood-fill.
 The graph of places is dilated to expose clusters of nodes in the environment (rooms). This works as eventually door nodes will gradually close, naturally sectioning the map into rooms.
@@ -86,7 +84,16 @@ Semantic labels are assigned using a neural tree. The key insight of this proces
 Loop Closure Detection:
 For each keyframe, it tries to find a past node which matches the latest one using associated Places, Objects and Appearance descriptors. Descriptors can be Hand-Crafted or Learning-based using GNNs. Hand-crafted counts object labels and uses a histogram of distance to obstacles for each place node, whereas learning-based uses bounding boxes, labels and spatial relationships for objects and distance and encodes distances between nodes to make it rotation invariant. Once a match candidate is found, it is verified using a top-down then bottom-up strategy, this makes sure false loop closures are avoided.
 
-Optimisation:
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/room_segmentation.png}
+    \caption{Illustration of room segmentation via graph of places dilation, reproduced from \cite{hydra}.}
+    \label{fig:room_seg}
+\end{figure}
+
+
+
+~\\\paragraph{Optimisation}~\\
 
 Odometry drift errors increase as the robot explores more of the scene, therefore the scene graph must be updated often to stay consistent. Hydra uses a sparse sub-graph called a deformation graph which has robot poses, mesh control points and a sparse version of all place nodes, this representation is more efficient than optimising the entire graph every time. Each node in this graph has a local coordinate frame (position + rotation), the optimiser then finds poses which minimise deformation by respecting original measurements but allowing for some flex. You can think of it like the graph edges being rubber bands, the optimiser pulls them to satisfy loop closures while minimising how much it deforms. Once the optimiser is finished, the corrected deformation graph is interpolated to reconstruct the full scene mesh and then reconciles the graph by merging place nodes within 0.4m of each other, and objects with same semantic labels and invading bounding boxes.
 
