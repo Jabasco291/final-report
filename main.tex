@@ -210,7 +210,7 @@
 % your own abstract.
 \maketitle{%
   % Abstract: typically 200--300 words. State problem, methods, and main results.  
-  \gls{slam}Simultaneous Localisation and Mapping (SLAM) is the fundamental robotics 
+  \gls{slam} is the fundamental robotics 
   problem of estimating both the pose of a mobile robot and a map of its surroundings. 
   This enables a robot to then make and execute tasks such as planning or navigation. 
   Recent advancements addressing the \gls{slam} problem use a graph-based representation of a 
@@ -220,16 +220,16 @@
   information that aids in robot planning and decision-making, but also in supporting 
   architecture-related tasks such as renovation, inventory and remote building visualisation.
   
-  This project focuses on deploying and evaluating 3 state of the art \gls{dsg} methods in a 
-  simulated environment: Hydra \cite{hydra}, Clio \cite{clio} and S-Graphs+ \cite{s_graphs_plus}. The best performing method 
+  This project focuses on deploying and evaluating 3 state-of-the-art \gls{dsg} methods in a 
+  simulated environment: S-Graphs+ \cite{s_graphs_plus}, Hydra \cite{hydra} and Clio \cite{clio}. The best performing method 
   was then used to process real world data and create a \gls{dsg} of the \gls{hccr} laboratory. Each method uses a different approach to creating the \gls{dsg}: 
   S-Graphs+ is geometry based, Hydra adopts a Spatial approach while Clio uses a Task-Driven approach.
 
   The evaluation revealed that S-Graphs+ struggled in cluttered environments, as objects like desks/beds 
   often prevented the method to identify wall planes, leading to incorrect classification of rooms. 
   As well as this, S-Graphs+ is a structural method only, meaning no semantic or object level information is considered. 
-  Hydra performed well at identifying objects, with a 65\% recall rate, but struggled to 
-  segment all rooms in the scene with an 80\% recall rate, especially struggling with smaller rooms like bathrooms. Clio excelled at 
+  Hydra performed well at identifying objects, with a 59\% recall rate, but struggled to 
+  segment all rooms in the scene with an 30\% recall rate, especially struggling with smaller rooms like bathrooms. Clio excelled at 
   segmenting and labelling rooms correctly, however struggled at identifying objects as well as practical application.
 }
 

@@ -20,7 +20,7 @@ This chapter provides the background needed to understand the project: the wider
 % constraints, assumptions.
 Autonomous robots operating in dynamic environments require rich spatial representations to perform high-level tasks. Recent advancements in this topic have led to \gls{dsg}s emerging as a way to build a hierarchical representation of a world scene, a key example being Hydra \cite{hydra}. These scene graphs are split up into different layers, which each represent different aspects of the scene. For example, room and object layers contain information about specific detected rooms and objects like their position and semantic label. Layers are connected in a hierarchical structure which reflects the structure of the environment. For example, building nodes contain floor nodes, which contain room nodes, which contain object nodes. 
 
-This structured approach allows a more contextual view of an environment. Giving a robot more context of its surroundings enables them to perform higher-level tasks. One application for this concept is architectural-related tasks. For example, if a robot can detect objects throughout a building, it can then be used to conduct an inventory or specific items like chairs or pens, which can further be adapted to aid in building management. Another benefit could be assisting architects. A \gls{dsg} produces an abstractable view of a building, which can be used be architects to analyse relational data of the scene to aid them in further development.
+This structured approach allows a more contextual view of an environment. Giving a robot more context of its surroundings enables them to perform higher-level tasks. One application for this concept is architectural-related tasks. For example, if a robot can detect objects throughout a building, it can then be used to conduct an inventory of specific items like chairs or pens, which can further be adapted to aid in building management. Another benefit could be assisting architects. A \gls{dsg} produces an abstractable view of a building, which can be used be architects to analyse relational data of the scene to aid them in further development.
 
 The general pipeline for a \gls{dsg} method starts with a metric layer, where the respective sensor data is turned into a volumetric or mesh representation, this forms the metric layer of the graph and is the minimum expected for a \gls{slam} solution. Then, the method will analyse the metric layer to extract information about the scene. The way this is extracted depends on the method and graph structure being used. For example, S-Graphs+ \cite{s_graphs_plus} analyses a point cloud to segment walls using the geometry of the scene, whereas Hydra \cite{hydra} uses neural networks to extract objects from RGB-D data. Each layer is constructed using the data of the layers below to eventually build a graph encompassing the whole scene.
 
@@ -32,7 +32,7 @@ The general pipeline for a \gls{dsg} method starts with a metric layer, where th
 
 \section{Theory and Concepts}\label{sec:theory}
 
-\subsection{S-Graphs+}
+\subsection{S-Graphs+\cite{s_graphs_plus}}
 S-Graphs+ jointly models a pose graph and a 3D scene graph using a 4-layer topological graph consisting of Keyframe, Wall, Room and Floor layers. Unlike the other 2 methods, its data input is from a 3D LiDAR sensor, which is pre-filtered and downsampled before processing. Robot odometry (used for \gls{slam}) is estimated either from LiDAR measurements or robot encoders, the method is agnostic to which it comes from.
 
 \paragraph{Wall Extraction} \mbox{} \\
@@ -64,7 +64,7 @@ This module extracts the widest wall planes within the current explored floor wh
 The graph is created and optimised in the back-end by minimising errors across all layers, refining both the robot’s pose estimates and the structure representations simultaneously.
 
 
-\subsection{Hydra}
+\subsection{Hydra\cite{hydra}}
 Hydra combines fast early and mid-level perception processes like local mapping with slow higher-level perception like global optimisation of the scene graph. Unlike S-Graphs+, Hydra grounds symbolic knowledge into the geometric map to create metric-semantic representation. This is useful for complex instructions which need contextual information about the environment.
 
 The hierarchical graph contains 5 layers: Metric-Semantic 3D Mesh, Objects and Agents, Places, Rooms, Buildings. When compared to S-Graphs+, Hydra [2] represents a much more grounded and actionable representation. The nodes must contain a single parent in the layer above, they can also only connect to adjacent layers, e.g. a chair connects to a room, but not the building. Sibling nodes children are disjoint, meaning furniture in sibling rooms are completely independent of each other. Hydra uses tree decomposition to represent a complex graph as a tree structure by using bags, which contains a set of nodes from the original graph. This stops the complexity exploding with size, bounding it to the most complex local structure for example how many objects in a room.
@@ -101,7 +101,7 @@ For each keyframe, it tries to find a past node which matches the latest one usi
 
 Odometry drift errors increase as the robot explores more of the scene, therefore the scene graph must be updated often to stay consistent. Hydra uses a sparse sub-graph called a deformation graph which has robot poses, mesh control points and a sparse version of all place nodes, this representation is more efficient than optimising the entire graph every time. Each node in this graph has a local coordinate frame (position + rotation), the optimiser then finds poses which minimise deformation by respecting original measurements but allowing for some flex. You can think of it like the graph edges being rubber bands, the optimiser pulls them to satisfy loop closures while minimising how much it deforms. Once the optimiser is finished, the corrected deformation graph is interpolated to reconstruct the full scene mesh and then reconciles the graph by merging place nodes within 0.4m of each other, and objects with same semantic labels and invading bounding boxes.
 
-\subsection{Clio}
+\subsection{Clio\cite{clio}}
 
 Clio is the most unique out of the 3 methods discussed in this project. The other methods build task-agnostic graphs, meaning they capture everything about the scene regardless of the robots intentions. Clio differs from this by creating a task-driven graph which only captures aspects of the scene which is relevant to the tasks the robot needs to carry out. This can be a more efficient representation as it only stores/processes things that are directly relevant, however this means the built graph cannot be used for more general operations.
 
