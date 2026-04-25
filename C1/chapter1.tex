@@ -33,6 +33,8 @@ This chapter introduces the dissertation. It outlines the motivation and context
 
 Classical approaches to the \gls{slam} problem represent the environment using only metric terms such as occupancy grids, which captures the raw geometry without any structural meaning. Whilst this is enough for basic navigation, increasingly advanced robotics require a more structured understanding of the scene in order to execute higher-level functions. This is particularly apparent in architecture contexts, where tasks like inventorying or remote visualisation require an understanding of spatial structure.
 
+As acknowledged in \cite{topologic}, current methods for building documentation rely on  inferred geometry and do not explicitly represent spatial connectivity or enclosure. This limits real-world applications such as inventorying, which needs room-level semantic partitioning to associate objects with spaces. Existing solutions such as Topologic \cite{Jabi2025} acknowledges this problem, however it still depends on initial human input for the topology. This motivates an automated system for scanning a real environment to create a topological spatial model, which can then assist in the applications discussed above.
+
 Recent advancements in \gls{slam} research use a graph-based representation of the scene that integrates metric(occupancy) and semantic (classes) estimates, along with hierarchical relationships connecting different aspects of the scene. For example, an object belongs to a room. This approach, known as a \gls{dsg}, enables it to have a broader range of higher-level tasks, such as responding to natural language commands like ‘pickup the red pen’, or architecture-related tasks mentioned above.
 
 Different \gls{dsg} methods use different approaches to how the scene is processed. This means they differ in how the scene is constructed and labelled. This proposes 3 core research questions: Which achieves the best accuracy, which is the most practical for deployment, and which creates the richest semantic understanding? This dissertation addresses these questions through a side-by-side evaluation of 3 state-of-the-art methods, resulting in deploying the best-performing method on real-world data.
@@ -49,10 +51,22 @@ The main aim of this project was to compare how 3 state-of-the-art methods perfo
 The project was broken down into 4 clear objectives:
 
 \begin{enumerate}[label=\textbf{O\arabic*:}, leftmargin=*]
-  \item Deploy all 3 methods on example data
-  \item Deploy methods on custom rosbag and store results
-  \item Evaluate results and determine which is the best-performing method
-  \item Use best-performing method on real-world data to generate a \gls{dsg} of the \gls{hccr} laboratory
+  \item \textbf{Deploy all 3 methods on example data}
+    \begin{itemize}
+      \item Ensures that the methods are working as intended
+    \end{itemize}
+  \item \textbf{Deploy methods on custom rosbag and store results}
+    \begin{itemize}
+      \item Allows a side-by-side performance review between the methods
+    \end{itemize}
+  \item \textbf{Evaluate results and determine which is the best-performing method}
+    \begin{itemize}
+      \item Determine the most suitable method for the HCCR lab in terms of metric, semantic and practical performance
+    \end{itemize}
+  \item \textbf{Use best-performing method on real-world data to generate a \gls{dsg} of the \gls{hccr} laboratory}
+    \begin{itemize}
+      \item Prove real-world practicality
+    \end{itemize}
 \end{enumerate}
 
 % When you need mathematics, use amsmath and mathtools. Example:
