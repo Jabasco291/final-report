@@ -24,13 +24,43 @@ This structured approach allows a more contextual view of an environment. Giving
 
 The general pipeline for a \gls{dsg} method starts with a metric layer, where the respective sensor data is turned into a volumetric or mesh representation, this forms the metric layer of the graph and is the minimum expected for a \gls{slam} solution. Then, the method will analyse the metric layer to extract information about the scene. The way this is extracted depends on the method and graph structure being used. For example, S-Graphs+ \cite{s_graphs_plus} analyses a point cloud to segment walls using the geometry of the scene, whereas Hydra \cite{hydra} uses neural networks to extract objects from RGB-D data. Each layer is constructed using the data of the layers below to eventually build a graph encompassing the whole scene.
 
+\bigskip
+\bigskip
+
+\section{High-Level Method Comparison}\label{sec:method-comparison}
+
+\begin{table}[H]
+\centering
+\caption{High-Level Method Comparison}
+\begin{tabular}{c c p{3.5cm} c c c} % 4 columns, all left-aligned
+\toprule
+\textbf{Method} & \textbf{Layers No.} & \textbf{Layer Names} & \textbf{Data Approach} & \textbf{Structural?} & \textbf{Semantics?} \\ 
+\midrule
+\textbf{S-Graphs+}   & 4          & Keyframes, Walls, Rooms, Floors          & Geometric & Yes & No         \\
+\textbf{Hydra}   & 5       & Metric-Semantic 3D Mesh, Objects and Agents, Places, Rooms, Buildings & Spatial & Yes & Yes        \\
+\textbf{Clio}   & 5       & 3D Mesh, Objects and Agents, Places, Rooms, Buildings  & Task-Driven & Yes & Yes        \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Layer Descriptions:
+\begin{itemize}
+  \item \textbf{Keyframes}: Robot pose estimates
+  \item \textbf{Metric-Semantic 3D Mesh}: Dense 3D reconstruction of the scene with semantic labels
+  \item \textbf{Walls}: Planar structural surfaces
+  \item \textbf{Objects}: Semantic objects within the scene, and robot pose estimates
+  \item \textbf{Rooms}: Enclosed segmented regions
+  \item \textbf{Places}: Graph representing free-space (for navigation)
+  \item \textbf{Buildings}: Encapsulates all rooms and floors within a building
+\end{itemize}
+
 %\lipsum[3-4]
 
 \section{Related work}\label{sec:related}
 % Prior solutions, methods, or systems; identify gaps your work addresses.
 % Optional subsections: by theme, chronology, or type (e.g.\@ systems, methods, theory).
 
-\section{Theory and Concepts}\label{sec:theory}
+\section{Theory of Methods}\label{sec:theory}
 
 \subsection{S-Graphs+\cite{s_graphs_plus}}
 S-Graphs+ jointly models a pose graph and a 3D scene graph using a 4-layer topological graph consisting of Keyframe, Wall, Room and Floor layers. Unlike the other 2 methods, its data input is from a 3D LiDAR sensor, which is pre-filtered and downsampled before processing. Robot odometry (used for \gls{slam}) is estimated either from LiDAR measurements or robot encoders, the method is agnostic to which it comes from.
