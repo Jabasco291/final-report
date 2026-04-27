@@ -26,6 +26,13 @@ This chapter describes how the problem was addressed. Choose sections that fit y
 \section{Research design}\label{sec:research-design}
 % Research: overall approach, methods (e.g.\@ quantitative, qualitative, design science), rationale. Omit for pure system-design projects.
 
+This project presents a comparative evaluation across 3 state-of-the-art candidate methods: S-Graphs+\cite{s_graphs_plus}, Hydra\cite{hydra} and Clio\cite{clio}. 
+
+The methods were evaluated over five executions on a controlled and consistent simulation environment. This highest-performing method was determined through evaluation of 3 main categories: Metric accuracy, Semantic accuracy and Practical feasibility. This chosen system was then deployed on real-world sensor data of the \gls{hccr} laboratory.
+
+Each method was deployed on the same simulated environment. The sensor data was recorded in a single rosbag using a RGB-D camera (Hydra and Clio) and 3D LiDAR sensor (S-Graphs+) which were attached to a differential drive robot and teleoperated around the scene. The methods resulted in a 3D scene graph, which was then saved in JSON format for further statistical evaluation. 
+Simulation results were evaluated quantitatively to determine the highest-performing statistically, then the real-world results were evaluated qualitatively. This is because ground-truth is accessible for simulation environments like Gazebo, however generating ground-truth can be complicated for real-world data.
+
 %\lipsum[11-12]
 
 \section{Specification}\label{sec:specification}
@@ -35,6 +42,14 @@ This chapter describes how the problem was addressed. Choose sections that fit y
 
 \section{Candidate Methods}\label{sec:methods}
 % how each works and differ
+
+The three candidate methods are S-Graphs+\cite{s_graphs_plus}, Hydra\cite{hydra} and Clio\cite{clio}. Below is a brief explanation of how each method works and why they were chosen for the evaluation.
+
+S-Graphs+ takes 3D LiDAR point cloud as input. It then analyses the point cloud to identify geometric planes, which are then used to detect rooms. The hierarchical structure consists of Keyframes, Walls, Rooms, Floors. There is no object segmentation or semantic labelling, its output mostly contains navigation and structural information. This method was selected to observe how its purely geometric structure would compare to methods which also incorporate semantics.
+
+Hydra adopts a spatial approach using RGB-D data to reconstruct a 3D metric-semantic mesh of the scene. It uses a \gls{gvd} to represent a free-space graph to represent navigable spaces. This graph is then dilated to expose connectors such as doorways which allows clusters of nodes to be segmented into rooms. Hydra differs from S-Graphs+ by including an object layer, as well as using a neural network to assign semantic labels throughout the graph. This method was included to evaluate the spatial approach compared to geometric and task-driven approaches.
+
+Clio takes a different approach to the other candidate methods. Instead of being task-agnostic, meaning it captures everything about the scene, Clio adopts a task-driven methodology. It takes a set of tasks and regions in natural language as input, then segments the scene into task-relevant objects. Clio’s semantics are open-set compared to Hydra’s closed-set semantics, meaning it doesn’t have a fixed set of possible semantic labels to choose from, instead they are decided upon depending on the tasks required. To identify regions (rooms), Clio groups semantic objects into regions rather than using geometric boundaries like the other 2 candidates. For example, a kettle and cooker are grouped into a kitchen. This method was chosen to evaluate how task-driven approaches compare to task-agnostic methods.
 
 %\lipsum[15-16]
 
