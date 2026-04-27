@@ -27,18 +27,18 @@ The general pipeline for a \gls{dsg} method starts with a metric layer, where th
 \bigskip
 \bigskip
 
-\section{High-Level Method Comparison}\label{sec:method-comparison}
+\section{Tabular Method Comparison}\label{sec:method-comparison}
 
 \begin{table}[H]
 \centering
-\caption{High-Level Method Comparison}
+\caption{High-Level Tabular Method Comparison}
 \begin{tabular}{c c p{3.5cm} c c c} % 4 columns, all left-aligned
 \toprule
-\textbf{Method} & \textbf{Layers No.} & \textbf{Layer Names} & \textbf{Data Approach} & \textbf{Structural?} & \textbf{Semantics?} \\ 
+\textbf{Method} & \textbf{Layers No.} & \textbf{Layer Names} & \textbf{Data Approach} & \textbf{Data Input} & \textbf{Semantics} \\ 
 \midrule
-\textbf{S-Graphs+}   & 4          & Keyframes, Walls, Rooms, Floors          & Geometric & Yes & No         \\
-\textbf{Hydra}   & 5       & Metric-Semantic 3D Mesh, Objects and Agents, Places, Rooms, Buildings & Spatial & Yes & Yes        \\
-\textbf{Clio}   & 5       & 3D Mesh, Objects and Agents, Places, Rooms, Buildings  & Task-Driven & Yes & Yes        \\
+\textbf{S-Graphs+}   & 4          & Keyframes, Walls, Rooms, Floors          & Geometric & LiDAR & -         \\
+\textbf{Hydra}   & 5       & Metric-Semantic 3D Mesh, Objects and Agents, Places, Rooms, Buildings & Spatial & RGB-D & Closed-Set        \\
+\textbf{Clio}   & 5       & 3D Mesh, Objects and Agents, Places, Rooms, Buildings  & Task-Driven & RGB-D & Open-Set        \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -75,13 +75,20 @@ Extracted walls are transformed into global map coordinates and classified into 
 This method introduces a novel strategy for segmenting rooms, it is split into 2 steps: Free-Space Clustering and Room Extraction
 
 \noindent Free-Space Clustering: \\
-The free-space clustering algorithm divides the free-space graphs into several clusters corresponding to rooms. The algorithm has 3 main steps:
-1.
-Removes boundary nodes which are too close to walls/obstacles. This helps to separate rooms by creating gaps such as doorways to segregate room clusters.
-2.
-A depth-first search is used to find isolated islands of connected nodes, which becomes clusters. Since doorways were pruned previously, these clusters can be assumed to represent rooms.
-3.
-Removed boundary nodes are re-added to maintain full coverage of free-space. This is vital for actions like navigation.
+The free-space clustering algorithm \ref{fig:free-space-alg}, divides the free-space graphs into several clusters corresponding to rooms. The algorithm has 3 main steps:
+
+\begin{enumerate}
+    \item \textbf{Pruning:} Removes boundary nodes which are too close to walls or obstacles. This helps to separate rooms by creating gaps such as doorways to segregate room clusters.
+    \item \textbf{Clustering:} A depth-first search (DFS) is used to find isolated islands of connected nodes, which become clusters. Since doorways were pruned in the previous step, these clusters are assumed to represent rooms.
+    \item \textbf{Restoration:} Previously removed boundary nodes are re-added to maintain full coverage of free-space. This is vital for actions such as navigation.
+\end{enumerate}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/free-space-clustering-algorithm.png}
+    \caption{Pseudocode for novel Free-space Clustering Algorithm, reproduced from \cite{s_graphs_plus}.}
+    \label{fig:free-space-alg}
+\end{figure}
 
 \noindent Room Extraction: \\
 
@@ -113,7 +120,7 @@ A \gls{gvd}, represents a skeleton of free-space. It is created using a Brushfir
 \paragraph{Rooms}~\\
 
 To identify rooms, persistent homology is used on the graph of places, each room is then given a semantic label using a neural tree. For the semantic labelling, we don’t have a network to identify rooms like we do for objects. Therefore, the semantics of the room must be inferred using contained objects and prior knowledge. Rooms are identified using a 2 stage process, identifying number of rooms, and assigning places to rooms via flood-fill.
-The graph of places is dilated to expose clusters of nodes in the environment (rooms). This works as eventually door nodes will gradually close, naturally sectioning the map into rooms.
+The graph of places is dilated \ref{fig:room_seg} to expose clusters of nodes in the environment (rooms). This works as eventually door nodes will gradually close, naturally sectioning the map into rooms.
 
 Persistent Homology is used to compute the best dilation distance for a given graph, this allows room segmentation to be effective across different scene contexts. The Flood-Fill algorithm is then used to assign remaining nodes to the putative room.
 Semantic labels are assigned using a neural tree. The key insight of this process is objects which are typically associated with a room type, e.g. a fridge. Edges may also be used such as a master bedroom being next to a bathroom.
@@ -155,5 +162,19 @@ The back-end takes the over-segmented primitives from the front-end and applies 
 
 \section{Problem statement}\label{sec:problem}
 % Clear statement of the problem and, if applicable, research question(s).
+
+Ideally, all \gls{dsg}s would be able to capture highly accurate representations of the environment 
+that also captures architectural topology and semantics of the scene. However, current 
+Metric-Semantic \gls{slam} methods all excel and struggle at different aspects, such as metric accuracy vs semantic accuracy. 
+
+Whilst state-of-the-art 
+methods have rigorous testing on datasets tailored for their own method, there 
+is limited side-by-side evaluation in a fair and controlled environment. Without this, the 
+architectural industry cannot determine which is the most reliable and suitable to aid in 
+architectural applications such as inventorying or remote visualisation.
+
+This dissertation bridges the gap by deploying each method on the same dataset. This will help identify the strengths and weaknesses side-by-side 
+in order to reflect on their usage potential for architectural tasks.
+
 
 %\lipsum[7-8]
