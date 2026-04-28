@@ -19,6 +19,7 @@
 %                   Literature and evidence; Summary.
 % =============================================================================
 
+
 This chapter describes how the problem was addressed. Choose sections that fit your project type; omit or merge as needed. Replace with enough detail for reproduction.
 
 %\lipsum[9-10]
@@ -55,6 +56,42 @@ Clio takes a different approach to the other candidate methods. Instead of being
 
 \section{Comparative Evaluation Framework}\label{sec:eval-framework}
 % criteria, metrics, how compare (accuracy, labelling etc)
+
+Table \ref{tab:metric-table} below outlines the metrics used for the evaluation.
+
+\renewcommand{\arraystretch}{1.5}
+\begin{table}[H]
+\centering
+\caption{Comparative Evaluation Framework}
+\label{tab:metric-table}
+\begin{tabular}{l l p{7cm}}
+\toprule
+\textbf{Category} & \textbf{Metric} & \textbf{Purpose} \\
+\midrule
+\multirow{4}{*}{\textbf{Structural}}
+    & Node Count              & Assesses structural reproducibility across runs \\
+    & Map Drift               & Assesses object localisation consistency \\
+    & Room Count              & Assesses room detection accuracy \\
+    & Room Centroid Accuracy  & Assesses room localisation accuracy \\
+\midrule
+\multirow{4}{*}{\textbf{Objects}}
+    & Recall, Precision, F1          & Measures completeness and accuracy of object detection \\
+    & Centroid mED                   & Assesses spatial accuracy of object localisation \\
+    & IoU Bounding Box Overlap       & Measures spatial accuracy of detected bounding boxes \\
+\midrule
+\multirow{2}{*}{\textbf{Semantic Accuracy}}
+    & Confusion Matrix        & Assesses per-class labelling accuracy and consistency \\
+    & Label Distribution      & Assesses semantic completeness for object detection \\
+\midrule
+\multirow{2}{*}{\textbf{Performance}}
+    & Front-end / Back-end Timing & Measures run-time performance \\
+    & Real-time Capability        & Assesses viability for real-world deployment \\
+\midrule
+\textbf{Architectural Suitability}
+    & Qualitative Assessment  & Evaluates overall usefulness for inventorying, remote visualisation and navigation \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 %\lipsum[17-18]
 
