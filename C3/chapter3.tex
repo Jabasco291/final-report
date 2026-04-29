@@ -99,7 +99,7 @@ As stated above, the evaluation criteria aimed to address 3 sections: Metric acc
 \section{Experimental Setup}\label{sec:design}
 % robot, gazebo world, rosbag, how run method, python scripts for eval
 
-The custom dataset used for the evaluation was the office scene shown in picture \ref{fig:office}, recorded in Gazebo using a differential drive robot shown in picture ---. The robot was configured to mimic the sensors on a Reachy2(reference) robot, which represents a realistic candidate for indoor tasks due to an omnidirectional base and gripper hands. It had a velodyne 3D LiDAR sensor (for S-Graphs+) attached to the base with a RGB-D camera (Hydra and Clio) attached to the body halfway up. The camera was a simulated camera setup to emulate the Intel Realsense D435 camera due to it being popular in robotics research, recording 1280x720 image at 30Hz, with 1.5708 Field of View. The office scene was sourced from \cite{gazebo-worlds-dataset}, which was segmented to include only a portion of the environment shown in picture (slimmed office picture ref). The decision to use a portioned section of the scene was made to ensure the recording was a feasible length whilst including multiple room types and objects.
+The custom dataset used for the evaluation was the office scene shown in picture \ref{fig:office}, recorded in Gazebo using a differential drive robot shown in picture \ref{fig:robot}. The robot was configured to mimic the sensors on a Reachy2(reference) robot, which represents a realistic candidate for indoor tasks due to an omnidirectional base and gripper hands. It had a velodyne 3D LiDAR sensor (for S-Graphs+) attached to the base with a RGB-D camera (Hydra and Clio) attached to the body halfway up. The camera was a simulated camera setup to emulate the Intel Realsense D435 camera due to it being popular in robotics research, recording 1280x720 image at 30Hz, with 1.5708 Field of View. The office scene was sourced from \cite{gazebo-worlds-dataset}, which was segmented to include only a portion of the environment shown in picture (slimmed office picture ref). The decision to use a portioned section of the scene was made to ensure the recording was a feasible length whilst including multiple room types and objects.
 
 Each method was deployed on the same rosbag recording, this made the evaluation fair, as it ensures they all process the same data, which allows for a direct comparsion.
 
@@ -111,9 +111,21 @@ A key deployment limitation was observed with Clio. The rosbag image data had to
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{figures/environment.png}
-    \caption{Reduced version of office scene from \cite{gazebo-worlds-dataset}.}
-    \label{fig:office}
+    % First image
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/environment.png}
+        \caption{Reduced version of office scene from \cite{gazebo-worlds-dataset}.}
+        \label{fig:office}
+    \end{minipage}
+    \hfill % Adds horizontal space between the images
+    % Second image
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/robot.png}
+        \caption{Robot used to record custom dataset.}
+        \label{fig:robot}
+    \end{minipage}
 \end{figure}
 
 %\lipsum[19-20]
