@@ -18,7 +18,7 @@ This appendix contains supplementary material: extra tables, derivations, or not
 
 \begin{table}[H]
 \centering
-\caption{Raw Execution Timings: Hydra Pipeline}
+\caption{Hydra Raw Execution Timings}
 \label{tab:hydra_raw}
 \begin{tabular}{ccccccc}
 \toprule
@@ -35,7 +35,7 @@ This appendix contains supplementary material: extra tables, derivations, or not
 
 \begin{table}[H]
 \centering
-\caption{Raw Execution Timings: S-Graphs Backend}
+\caption{S-Graphs+ Raw Execution Timings (Backend)}
 \label{tab:sgraphs_raw}
 \begin{tabular}{ccccc}
 \toprule
@@ -50,11 +50,89 @@ This appendix contains supplementary material: extra tables, derivations, or not
 \end{tabular}
 \end{table}
 
+\begin{table}[H]
+\centering
+\caption{Hydra Raw Object Spatial Accuracy Statistics}
+\label{tab:hydra_raw_spatial}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Run} & \textbf{Mean Drift (m)} & \textbf{Max Drift (m)} & \textbf{MED (m)} & \textbf{IoU} \\
+\midrule
+Run 1 & 0.16 & 6.69 & 0.70 & 0.24 \\
+Run 2 & 0.16 & 6.69 & 0.73 & 0.23 \\
+Run 3 & 0.16 & 6.69 & 0.70 & 0.24 \\
+Run 4 & 0.16 & 6.69 & 0.70 & 0.25 \\
+Run 5 & 0.16 & 6.69 & 0.74 & 0.23 \\
+\midrule
+\textbf{Mean} & \textbf{0.16} & \textbf{6.69} & \textbf{0.71} & \textbf{0.24} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Clio Raw Spatial Accuracy Statistics}
+\label{tab:clio_raw_spatial}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Run} & \textbf{Mean Drift (m)} & \textbf{Max Drift (m)} & \textbf{MED (m)} & \textbf{IoU} \\
+\midrule
+Run 1 & 2.18 & 9.22 & 3.21 & 0.00 \\
+Run 2 & 2.18 & 9.22 & 3.51 & 0.00 \\
+Run 3 & 2.18 & 9.22 & 3.80 & 0.00 \\
+Run 4 & 2.18 & 9.22 & 3.66 & 0.00 \\
+Run 5 & 2.18 & 9.22 & 2.63 & 0.00 \\
+\midrule
+\textbf{Mean} & \textbf{2.18} & \textbf{9.22} & \textbf{3.36} & \textbf{0.00} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Hydra Raw Label Distribution Statistics}
+\label{tab:appendix_hydra_labels}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Label Class} & \textbf{Mean Count} & \textbf{Std Dev} & \textbf{CV} \\
+\midrule
+Chair (12)           & 18.80 & 1.10 & 0.06 \\
+Thing (17)           & 18.40 & 0.89 & 0.05 \\
+Table (11)           & 10.40 & 1.52 & 0.15 \\
+Storage (10)         & 5.60  & 0.55 & 0.10 \\
+Shelf (7)            & 2.80  & 0.45 & 0.16 \\
+Plant (8)            & 2.80  & 0.45 & 0.16 \\
+Wall Decoration (13) & 2.20  & 0.45 & 0.20 \\
+Appliance (16)       & 2.00  & 0.00 & 0.00 \\
+Door (4)             & 1.00  & 0.00 & 0.00 \\
+Light (15)           & 1.00  & 0.00 & 0.00 \\
+Couch (14)           & 0.40  & 0.55 & 1.38 \\
+\midrule
+\textbf{Mean (Overall)} & \textbf{5.95} & \textbf{0.54} & \textbf{0.21} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Appendix: Clio Label Distribution Statistics}
+\label{tab:appendix_clio_labels}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Label Class} & \textbf{Mean Count} & \textbf{Std Dev} & \textbf{CV} \\
+\midrule
+Unknown (4294967295) & 2.20 & 0.45 & 0.20 \\
+\midrule
+\textbf{Mean (Overall)} & \textbf{2.20} & \textbf{0.45} & \textbf{0.20} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\textwidth]{figures/confusion_matrix_mean_raw.png}
     \caption{Mean Count Confusion Matrix of Hydra Labels vs Ground Truth Labels}
-    \label{fig:cmatrix}
+    \label{fig:cmatrixappendix}
 \end{figure}
 
 

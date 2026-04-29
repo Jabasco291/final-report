@@ -70,17 +70,18 @@ As stated above, the evaluation criteria aimed to address 3 sections: Metric acc
 \midrule
 \multirow{4}{*}{\textbf{Structural}}
     & Node Count              & Assesses structural reproducibility across runs \\
-    & Map Drift               & Assesses object localisation consistency \\
     & Room Count              & Assesses room detection accuracy \\
     & Room Centroid Accuracy  & Assesses room localisation accuracy \\
 \midrule
 \multirow{4}{*}{\textbf{Objects}}
     & Recall, Precision, F1          & Measures completeness and accuracy of object detection \\
+    & Per Run Object Drift               & Assesses object localisation consistency \\
     & Centroid mED                   & Assesses spatial accuracy of object localisation \\
     & IoU Bounding Box Overlap       & Measures spatial accuracy of detected bounding boxes \\
 \midrule
 \multirow{2}{*}{\textbf{Semantic Accuracy}}
-    & Confusion Matrix        & Assesses per-class labelling accuracy and consistency \\
+    & Object Confusion Matrix        & Assesses per-class labelling accuracy and consistency \\
+    & Room Confusion Matrix (Clio)        & Assesses per-room labelling accuracy and consistency \\
     & Label Distribution      & Assesses semantic completeness for object detection \\
 \midrule
 \multirow{2}{*}{\textbf{Performance}}

@@ -29,7 +29,7 @@ This chapter presents the results and evaluates them. Describe how the solution 
 
 \begin{table}[H]
 \centering
-\caption{Comparison of Scene Graph Node Statistics across Methods}
+\caption{Scene Graph Node Statistics.}
 \label{tab:node_stats_transposed}
 \begin{tabular}{l | ccc | ccc | ccc}
 \toprule
@@ -47,7 +47,7 @@ Clio      & 1972.0 & 25.67 & 0.01 & 12.80 & 2.32 & 0.18 & 2.20 & 0.40 & 0.18 \\
 
 \begin{table}[H]
 \centering
-\caption{Room Recognition Comparison: Method Performance across Metrics. \textbf{Best results in bold.}}
+\caption{Room Recognition Statistics. \textbf{Best results in bold.}}
 \label{tab:room_recognition_transposed}
 \begin{tabular}{l | ccc | ccc | ccc}
 \toprule
@@ -65,31 +65,50 @@ Clio      & \textbf{0.93} & 0.09 & 0.10 & 0.45 & 0.06 & 0.14 & 0.60 & 0.06 & 0.1
 
 \begin{table}[H]
 \centering
-\caption{Spatial Accuracy Comparison: Method Performance across Drift and MED. \textbf{Best results in bold.}}
-\label{tab:spatial_stats_transposed}
-\begin{tabular}{l | ccc | ccc}
+\caption{Object Detection Accuracy. \textbf{Best results in bold.}}
+\label{tab:object_classification}
+\begin{tabular}{l | ccc | ccc | ccc}
 \toprule
-\textbf{Method} & \multicolumn{3}{c|}{\textbf{Drift (m)}} & \multicolumn{3}{c}{\textbf{MED (m)}} \\
- & Avg & Std & CV & Avg & Std & CV \\
+\textbf{Method} & \multicolumn{3}{c|}{\textbf{Recall}} & \multicolumn{3}{c|}{\textbf{Precision}} & \multicolumn{3}{c}{\textbf{F1-Score}} \\
+ & Avg & Std & CV & Avg & Std & CV & Avg & Std & CV \\
 \midrule
-Hydra     & \textbf{0.16} & 0.72 & 4.50 & \textbf{0.71} & 0.69 & 0.97 \\
-Clio      & 2.18 & 2.74 & 1.25 & 3.36 & 0.53 & 0.17 \\
+S-Graphs+ & --- & --- & --- & --- & --- & --- & --- & --- & --- \\
+Hydra     & 0.79 & 0.01 & 0.01 & 0.49 & 0.02 & 0.05 & 0.61 & 0.02 & 0.03 \\
+Clio      & 0.00 & 0.00 & NaN  & 0.00 & 0.00 & NaN  & 0.00 & 0.00 & NaN  \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\begin{table}[H]
+\centering
+\caption{Object Spatial Accuracy. \textbf{Best results in bold.}}
+\label{tab:object_spatial_revised}
+\begin{tabular}{l | ccc | ccc | ccc}
+\toprule
+\textbf{Method} & \multicolumn{3}{c|}{\textbf{Drift Over Runs (m)}} & \multicolumn{3}{c|}{\textbf{Centroid mED (m)}} & \multicolumn{3}{c}{\textbf{Bounding Box IoU}} \\
+ & Avg & Std & CV & Avg & Std & CV & Avg & Std & CV \\
+\midrule
+S-Graphs+ & --- & --- & --- & --- & --- & --- & --- & --- & --- \\
+Hydra     & \textbf{0.16} & 0.72 & 4.50 & \textbf{0.71} & 0.69 & 0.97 & \textbf{0.24} & 0.26 & 1.07 \\
+Clio      & 2.18 & 2.74 & 1.25 & 3.36 & 0.53 & 0.17 & 0.00 & 0.00 & NaN \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 
 \subsection{Semantic Accuracy}\label{sec:labels}
 
 \begin{table}[H]
 \centering
-\caption{Comparison of Label Distribution across Methods}
+\caption{Comparison of Label Distribution}
 \label{tab:label_dist_transposed}
 \begin{tabular}{l | ccc}
 \toprule
 \textbf{Method} & \multicolumn{3}{c}{\textbf{All Labels}} \\
  & Avg & Std & CV \\
 \midrule
-Hydra & \textbf{5.95} & 0.54 & 0.21 \\
+S-Graphs+ & --- & --- & --- \\
+Hydra & 5.95 & 0.54 & 0.21 \\
 Clio  & 2.20 & 0.45 & 0.20 \\
 \bottomrule
 \end{tabular}
