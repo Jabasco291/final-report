@@ -18,27 +18,6 @@ This appendix contains supplementary material: extra tables, derivations, or not
 
 \begin{table}[ht]
 \centering
-\caption{Aggregate Summary Statistics for All Systems (values in seconds)}
-\label{tab:summary_stats}
-\begin{tabular}{llccccc}
-\toprule
-\textbf{System} & \textbf{Stage} & \textbf{Mean} & \textbf{Std Dev} & \textbf{Max Mean} & \textbf{Max Std Dev} & \textbf{CV} \\
-\midrule
-Hydra & Frontend & 0.105 & 0.002 & 0.210 & 0.020 & 0.020 \\
-Hydra & Backend & 0.058 & 0.001 & 0.179 & 0.022 & 0.018 \\
-\textbf{Hydra} & \textbf{Total} & \textbf{0.162} & \textbf{0.003} & \textbf{0.389} & \textbf{0.041} & \textbf{0.019} \\
-\midrule
-Clio & Frontend & 0.082 & 0.001 & 0.330 & 0.049 & 0.012 \\
-Clio & Backend & 0.070 & 0.002 & 0.205 & 0.018 & 0.031 \\
-\textbf{Clio} & \textbf{Total} & \textbf{0.153} & \textbf{0.003} & \textbf{0.535} & \textbf{0.048} & \textbf{0.019} \\
-\midrule
-S-Graphs & Backend & 0.019 & 0.002 & 0.053 & 0.008 & 0.086 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[ht]
-\centering
 \caption{Raw Execution Timings: Hydra Pipeline}
 \label{tab:hydra_raw}
 \begin{tabular}{ccccccc}
@@ -71,76 +50,6 @@ S-Graphs & Backend & 0.019 & 0.002 & 0.053 & 0.008 & 0.086 \\
 \end{tabular}
 \end{table}
 
-%HYDRA TABLES
-\begin{table}[ht]
-\centering
-\caption{Scene Graph Node and Object Label Distribution}
-\label{tab:node_stats}
-\begin{tabular}{llccc}
-\toprule
-\textbf{System} & \textbf{Metric} & \textbf{Mean} & \textbf{Std Dev} & \textbf{CV} \\
-\midrule
-Hydra & Total Nodes & 1205.0 & 15.40 & 0.01 \\
-Hydra & Room Nodes & 3.0 & 1.67 & 0.56 \\
-Hydra & Object Nodes & 65.4 & 3.26 & 0.05 \\
-\midrule
-Clio & Total Nodes & 1972.0 & 25.67 & 0.01 \\
-Clio & Room Nodes & 12.8 & 2.32 & 0.18 \\
-Clio & Object Nodes & 2.2 & 0.40 & 0.18 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[ht]
-\centering
-\caption{Room Recognition: Recall, Precision, and F1-Score}
-\label{tab:room_recognition}
-\begin{tabular}{lcccc}
-\toprule
-\textbf{System} & \textbf{Run} & \textbf{Recall} & \textbf{Precision} & \textbf{F1-Score} \\
-\midrule
-Hydra & Mean & 0.43 & 0.90 & 0.55 \\
-Hydra & Std Dev & 0.25 & 0.15 & 0.21 \\
-\midrule
-Clio & Mean & 0.93 & 0.45 & 0.60 \\
-Clio & Std Dev & 0.09 & 0.06 & 0.06 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[ht]
-\centering
-\caption{Spatial Accuracy: Drift and Mean Euclidean Distance (MED)}
-\label{tab:spatial_accuracy}
-\begin{tabular}{llccc}
-\toprule
-\textbf{System} & \textbf{Metric} & \textbf{Mean (m)} & \textbf{Std Dev} & \textbf{CV} \\
-\midrule
-Hydra & Drift (Overall) & 0.16 & 0.72 & 4.50 \\
-Hydra & MED (Overall) & 0.71 & 0.69 & 0.97 \\
-\midrule
-Clio & Drift (Unknown) & 2.18 & 2.74 & 1.25 \\
-Clio & MED (Overall) & 3.36 & 0.53 & 0.17 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[ht]
-\centering
-\caption{Spatial Accuracy: Drift and Mean Euclidean Distance (MED)}
-\label{tab:spatial_accuracy}
-\begin{tabular}{llccc}
-\toprule
-\textbf{System} & \textbf{Metric} & \textbf{Mean (m)} & \textbf{Std Dev} & \textbf{CV} \\
-\midrule
-Hydra & Drift (Overall) & 0.16 & 0.72 & 4.50 \\
-Hydra & MED (Overall) & 0.71 & 0.69 & 0.97 \\
-\midrule
-Clio & Drift (Unknown) & 2.18 & 2.74 & 1.25 \\
-Clio & MED (Overall) & 3.36 & 0.53 & 0.17 \\
-\bottomrule
-\end{tabular}
-\end{table}
 
 %\lipsum[47-48]
 
