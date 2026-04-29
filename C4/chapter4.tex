@@ -25,25 +25,7 @@ This chapter presents the results and evaluates them. Describe how the solution 
 % Main findings: present tables and figures; summarise key outcomes. Optional
 % subsections: by research question, by dataset, or by metric.
 
-\subsection{Timing}\label{sec:timing}
-
-\begin{table}[H]
-\centering
-\caption{System Timing Comparison across Stages (Seconds). \textbf{Best results in bold.}}
-\label{tab:timing_transposed}
-\begin{tabular}{l | ccc | ccc | c}
-\toprule
-\textbf{Method} & \multicolumn{3}{c|}{\textbf{Frontend}} & \multicolumn{3}{c|}{\textbf{Backend}} & \textbf{Total (Avg)} \\
- & Avg & Std & CV & Avg & Std & CV & \\
-\midrule
-Hydra    & 0.105 & 0.002 & 0.020 & 0.058 & 0.001 & 0.018 & 0.162 \\
-Clio     & \textbf{0.082} & 0.001 & 0.012 & 0.070 & 0.002 & 0.031 & \textbf{0.152} \\
-S-Graphs+ & --- & --- & --- & \textbf{0.019} & 0.002 & 0.086 & --- \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\subsection{Node Counts}\label{sec:node-counts}
+\subsection{Structural Consistency}\label{sec:node-counts}
 
 \begin{table}[H]
 \centering
@@ -61,7 +43,7 @@ Clio      & 1972.0 & 25.67 & 0.01 & 12.80 & 2.32 & 0.18 & 2.20 & 0.40 & 0.18 \\
 \end{tabular}
 \end{table}
 
-\subsection{Room}\label{sec:rooms}
+\subsection{Room Segmentation}\label{sec:rooms}
 
 \begin{table}[H]
 \centering
@@ -79,7 +61,7 @@ Clio      & \textbf{0.93} & 0.09 & 0.10 & 0.45 & 0.06 & 0.14 & 0.60 & 0.06 & 0.1
 \end{tabular}
 \end{table}
 
-\subsection{Object}\label{sec:object}
+\subsection{Object Detection}\label{sec:object}
 
 \begin{table}[H]
 \centering
@@ -90,14 +72,13 @@ Clio      & \textbf{0.93} & 0.09 & 0.10 & 0.45 & 0.06 & 0.14 & 0.60 & 0.06 & 0.1
 \textbf{Method} & \multicolumn{3}{c|}{\textbf{Drift (m)}} & \multicolumn{3}{c}{\textbf{MED (m)}} \\
  & Avg & Std & CV & Avg & Std & CV \\
 \midrule
-S-Graphs+ & \textbf{0.05} & 0.01 & 0.20 & \textbf{0.12} & 0.02 & 0.16 \\
-Hydra     & 0.16 & 0.72 & 4.50 & 0.71 & 0.69 & 0.97 \\
+Hydra     & \textbf{0.16} & 0.72 & 4.50 & \textbf{0.71} & 0.69 & 0.97 \\
 Clio      & 2.18 & 2.74 & 1.25 & 3.36 & 0.53 & 0.17 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\subsection{Labels}\label{sec:labels}
+\subsection{Semantic Accuracy}\label{sec:labels}
 
 \begin{table}[H]
 \centering
@@ -110,6 +91,31 @@ Clio      & 2.18 & 2.74 & 1.25 & 3.36 & 0.53 & 0.17 \\
 \midrule
 Hydra & \textbf{5.95} & 0.54 & 0.21 \\
 Clio  & 2.20 & 0.45 & 0.20 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/confusion_matrix_mean_norm.png}
+    \caption{Normalised Confusion Matrix of Hydra Labels vs Ground Truth Labels}
+    \label{fig:cmatrix}
+\end{figure}
+
+\subsection{Practicality}\label{sec:timing}
+
+\begin{table}[H]
+\centering
+\caption{System Timing Comparison across Stages (Seconds). \textbf{Best results in bold.}}
+\label{tab:timing_transposed}
+\begin{tabular}{l | ccc | ccc | c}
+\toprule
+\textbf{Method} & \multicolumn{3}{c|}{\textbf{Frontend}} & \multicolumn{3}{c|}{\textbf{Backend}} & \textbf{Total (Avg)} \\
+ & Avg & Std & CV & Avg & Std & CV & \\
+\midrule
+Hydra    & 0.105 & 0.002 & 0.020 & 0.058 & 0.001 & 0.018 & 0.162 \\
+Clio     & \textbf{0.082} & 0.001 & 0.012 & 0.070 & 0.002 & 0.031 & \textbf{0.152} \\
+S-Graphs+ & --- & --- & --- & \textbf{0.019} & 0.002 & 0.086 & --- \\
 \bottomrule
 \end{tabular}
 \end{table}

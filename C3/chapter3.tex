@@ -98,6 +98,23 @@ As stated above, the evaluation criteria aimed to address 3 sections: Metric acc
 \section{Experimental Setup}\label{sec:design}
 % robot, gazebo world, rosbag, how run method, python scripts for eval
 
+The custom dataset used for the evaluation was the office scene shown in picture \ref{fig:office}, recorded in Gazebo using a differential drive robot shown in picture ---. The robot was configured to mimic the sensors on a Reachy2(reference) robot, which represents a realistic candidate for indoor tasks due to an omnidirectional base and gripper hands. It had a velodyne 3D LiDAR sensor (for S-Graphs+) attached to the base with a RGB-D camera (Hydra and Clio) attached to the body halfway up. The camera was a simulated camera setup to emulate the Intel Realsense D435 camera due to it being popular in robotics research, recording 1280x720 image at 30Hz, with 1.5708 Field of View. The office scene was sourced from \cite{gazebo-worlds-dataset}, which was segmented to include only a portion of the environment shown in picture (slimmed office picture ref). The decision to use a portioned section of the scene was made to ensure the recording was a feasible length whilst including multiple room types and objects.
+
+Each method was deployed on the same rosbag recording, this made the evaluation fair, as it ensures they all process the same data, which allows for a direct comparsion.
+
+Before testing commenced on the custom dataset, the methods were verified against example/known data to ensure they had correct behaviour. Hydra and Clio were tested on their respective example datasets. However, there was no provided example data for S-Graphs+, but it was deployed on a small recording of an indoor house from a prior Introduction to Computational Robotics module, which provided a simple environment to assess expected behaviour. Once expected behaviour was confirmed, the evaluation stage could then begin.
+
+A fundamental part for deploying Clio requires a task/region list, which represents the tasks and regions it should be searching for. It was fed with Tasks: --- and Regions: ---. These were chosen to cater for all room types, as well as objects which are distinct and regular throughout the scene which would allow for detection analysis.
+
+A key deployment limitation was observed with Clio. The rosbag image data had to be downsampled and played at maximum 0.25x speed in order for frames to be processed correctly and the system not to crash. Even with this input, GPU usage was observed to spike to 98% occasionally, which suggests the bottleneck might have been to do with the hardware gap (SPECS) to (SPECS). Notably, Clio ran without issue on the example dataset at real-time playback, suggesting the limitation is a specific response to the custom dataset. This represents a real-world capability limitation, as Hydra was able to run in real-time playback with the original image size without issue.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/environment.png}
+    \caption{Reduced version of office scene from \cite{gazebo-worlds-dataset}.}
+    \label{fig:office}
+\end{figure}
+
 %\lipsum[19-20]
 
 \section{Implementation}\label{sec:implementation}
