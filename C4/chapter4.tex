@@ -15,10 +15,6 @@ This chapter presents the results and evaluates them. Describe how the solution 
 
 %\lipsum[25-26]
 
-\section{Setup}\label{sec:setup}
-% Evaluation setup: data, metrics, baselines, how experiments or tests were run.
-% Optional subsections: environment, hyperparameters, evaluation protocol.
-
 %\lipsum[27-28]
 
 \section{Results}\label{sec:results}
@@ -30,7 +26,7 @@ This chapter presents the results and evaluates them. Describe how the solution 
 \begin{table}[H]
 \centering
 \caption{Scene Graph Node Statistics.}
-\label{tab:node_stats_transposed}
+\label{tab:node_stats}
 \begin{tabular}{l | ccc | ccc | ccc}
 \toprule
 \textbf{Method} & \multicolumn{3}{c|}{\textbf{Total Nodes}} & \multicolumn{3}{c|}{\textbf{Room Nodes}} & \multicolumn{3}{c}{\textbf{Object Nodes}} \\
@@ -42,6 +38,16 @@ Clio      & 1972.0 & 25.67 & 0.01 & 12.80 & 2.32 & 0.18 & 2.20 & 0.40 & 0.18 \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+Table \ref{tab:node_stats} shows the different node counts for different layers in the graphs. 
+
+The data reveals a contrast between the scope of the three methods. S-Graphs+ has the most lightweight representation with only 95.40 average total nodes. This is expected behaviour as it only focuses on free space and structural features like walls/rooms. S-Graphs+ also features a remarkably low standard deviation, which highlights the consistency of the geometric approach compared to semantic inferences.
+
+In contrast, Hydra and Clio generate much denser graphs with 1205 and 1972 nodes. This is due to the construction of a 3D mesh as well as identifying objects within the scene. They both have higher standard deviations than S-Graphs+, which is an observed result of their neural network driven approach which can introduce fluctuations per run.
+
+With knowledge that the scene contained 6 rooms, the Room Nodes metric provides an overview of the room segmentation performance (explored more in section \ref{sec:rooms}). S-Graphs+ had the closest room identification with an average of 4 rooms per run, however missing the large open-office in the centre of the scene. This is down to the geometric processing compared to the semantic/clustering approach of the other methods. Hydra on average under-segmented the scene by merging rooms into larger ones. This could be down to the specific parameters about the aggressiveness of the space clustering system. Oppositely, Clio over-segmented the scene by creating new region nodes in already tagged areas. This is most likely a result of the semantic approach to room segmentation.
+
+The largest gap in performance is object detection. With S-Graphs+ not containing an object layer and Clio clearly struggling to identify objects with a 2.2 average count per run. Hydra stood out with 65.4 objects detected.
 
 \subsection{Room Segmentation}\label{sec:rooms}
 
@@ -60,6 +66,10 @@ Clio      & \textbf{0.93} & 0.09 & 0.10 & 0.45 & 0.06 & 0.14 & 0.60 & 0.06 & 0.1
 \bottomrule
 \end{tabular}
 \end{table}
+
+The room segmentation results outline a stark opposite in performance between Hydra and Clio. Hydra scores lowest in Recall and highest in Precision, which means when Hydra identifies a room, its likely to be a room, however it is conservative when creating new rooms. This behaviour led to the under-segmentation outlined in section \ref{sec:node-counts}. Hydra also had the highest standard deviation which means it was the least consistent for room segmentation. Clio represents the opposite behaviour with the highest recall and lowest precision, meaning it usually identifies all of the rooms in the scene, however there are lots of false positives or duplicate rooms. This leads to the over-segmentation shown in section \ref{sec:node-counts}.
+
+S-Graphs+ scored middle for both recall and precision, which allowed it to achieve the best F1 score which represents the both metrics as an overall score.
 
 \subsection{Object Detection}\label{sec:object}
 
@@ -95,6 +105,13 @@ Clio      & 2.18 & 2.74 & 1.25 & 3.36 & 0.53 & 0.17 & 0.00 & 0.00 & NaN \\
 \end{tabular}
 \end{table}
 
+S-Graphs+ is excluded from these results due to the absence of an object layer.
+
+As previously shown in section \ref{sec:node-counts}, Clio significantly struggled with detecting objects within the office scene despite having expected performance in the example dataset with a recall of 0.0. This suggests a lack of adaptability to the custom dataset. This might be down to the differential drive motion of the dataset compared to the handheld motion of the example dataset, which provides more angles of the same object (a fundamental part of Clio’s object classification).
+
+Hydra stood out as the only acceptable method for object detection with F1 score 0.61. Also showing consistency over runs through centroid drift per run, (average 0.16m). Hydra showed acceptable accuracy through 0.71 mean Euclidean distance between detected object and ground truth object centroids. Intersection of Union between bounding boxes revealed an average overlap of 0.24 between detected and ground truth.
+
+
 
 \subsection{Semantic Accuracy}\label{sec:labels}
 
@@ -114,12 +131,18 @@ Clio  & 2.20 & 0.45 & 0.20 \\
 \end{tabular}
 \end{table}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.5\textwidth]{figures/confusion_matrix_mean_norm.png}
-    \caption{Normalised Confusion Matrix of Hydra Labels vs Ground Truth Labels}
+    \caption{Hydra vs Ground Truth  Semantic Labels: Normalised Confusion Matrix}
     \label{fig:cmatrix}
 \end{figure}
+
+The confusion matrix shown in figure \ref{fig:cmatrix} outlines a contrasts in performances throughout Hydra’s semantic labelling pipeline. It identifies 95\% of the chairs from the ground truth correctly, showing it has the potential for accurate semantics. However, it labelled 67\% of ground truth “Appliances” as “Things”. This is likely due to a vocabulary mismatch between the label space and ground truth objects within the scene, as it doesn’t have labels computers or monitors which are in excess.
+
+Hydra seemed to struggle with geometric objects like tables and storage containers. With the model often identifying Structures, storage and appliances as tables. This inaccuracy is likely due to the similarity between geometric shapes of flat sides like tables and storage containers.
+
+There was no confusion matrix generated for Clio due to the insufficient object detection outlined in section \ref{sec:node-counts} and \ref{sec:object}.
 
 \subsection{Practicality}\label{sec:timing}
 
@@ -138,6 +161,14 @@ S-Graphs+ & --- & --- & --- & \textbf{0.019} & 0.002 & 0.086 & --- \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+S-Graphs+ operates with a different pipeline to Hydra and Clio, therefore front-end timing data was not accessible within the project’s time-frame.
+
+The data in table 4.6 shows a start contrast between data approach and back-end execution time. S-Graphs+ has the smallest back-end processing time of 0.019s, significantly outperforming the other methods. This is a clear demonstration of the processing time for simply interpreting geometric data compared to image segmentation and neural networks.
+
+The other two methods have similar performance over the total system. Clio has the fastest overall processing time with 0.152s per frame, which represents the difference between processing everything in the scene compared to only focusing on task-relevant aspects of the scene.
+
+However, as outlined in section \ref{sec:sim-setup}, Clio required the rosbag to be played at 0.25x playback speed with downsampled image data to process frames without crashing. Therefore, even though the inner timing comparisons outline Clio as the most efficient, it is misleading regarding practical deployment as the system achieving real-time processing is critical.
 
 %\lipsum[29-30]
 
