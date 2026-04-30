@@ -21,7 +21,7 @@ This chapter presents the results and evaluates them. Describe how the solution 
 % Main findings: present tables and figures; summarise key outcomes. Optional
 % subsections: by research question, by dataset, or by metric.
 
-\subsection{Structural Consistency}\label{sec:node-counts}
+\subsection{Structural Consistency}\label{sec:res:node-counts}
 
 \begin{table}[H]
 \centering
@@ -49,7 +49,7 @@ With knowledge that the scene contained 6 rooms, the Room Nodes metric provides 
 
 The largest gap in performance is object detection. With S-Graphs+ not containing an object layer and Clio clearly struggling to identify objects with a 2.2 average count per run. Hydra stood out with 65.4 objects detected.
 
-\subsection{Room Segmentation}\label{sec:rooms}
+\subsection{Room Segmentation}\label{sec:res:room-seg}
 
 \begin{table}[H]
 \centering
@@ -71,7 +71,7 @@ The room segmentation results outline a stark opposite in performance between Hy
 
 S-Graphs+ scored middle for both recall and precision, which allowed it to achieve the best F1 score which represents the both metrics as an overall score.
 
-\subsection{Object Detection}\label{sec:object}
+\subsection{Object Detection}\label{sec:res:objects}
 
 \begin{table}[H]
 \centering
@@ -113,7 +113,7 @@ Hydra stood out as the only acceptable method for object detection with F1 score
 
 
 
-\subsection{Semantic Accuracy}\label{sec:labels}
+\subsection{Semantic Accuracy}\label{sec:res:semantic}
 
 \begin{table}[H]
 \centering
@@ -144,7 +144,7 @@ Hydra seemed to struggle with geometric objects like tables and storage containe
 
 There was no confusion matrix generated for Clio due to the insufficient object detection outlined in section \ref{sec:node-counts} and \ref{sec:object}.
 
-\subsection{Practicality}\label{sec:timing}
+\subsection{Practicality}\label{sec:res:practicality}
 
 \begin{table}[H]
 \centering
@@ -177,6 +177,49 @@ However, as outlined in section \ref{sec:sim-setup}, Clio required the rosbag to
 \section{Discussion}\label{sec:discussion}
 % Critical appraisal: strengths, weaknesses, methodology choices; comparison
 % with prior work. Optional: ablation analysis, sensitivity analysis.
+
+\subsection{Room Segmentation: Dilation vs Semantic Clustering}\label{sec:disc-room-seg}
+
+Results from section \ref{sec:res:room-seg} highlighted the contrast between Hydra’s under-segmentation and Clio’s over-segmentation. This is likely due to the fundamentals of their room segmentation logic, where Hydra dilates a graph of places whereas Clio determines regions based on semantic clusters.
+
+As discussed in \ref{subsec:hydra}, a key layer of the Hydra graph is a graph of places, which represents free space within the scene. This graph naturally contains small pathways through room connectors like doors. This graph is dilated a set amount, which removes the doorways leaving cluster of nodes (rooms). 
+
+\noindent \textbf{Dilation} \\
+The problem encountered during the evaluation was perfecting the dilation distance. The ideal dilation distance for segmenting large areas like office floors commonly exceeds the dimensions of smaller rooms like bathrooms, causing them to get ignored during clustering. The images fig 1,2 show this happening with the private office. At first it was recognised as a room, the graph grows a denser connection between the office and open-space, which renders the dilation distance insufficient for separating them.
+
+\noindent \textbf{Delta} \\
+The delta distance \ref{fig:room_seg}, is the depth of the boundary deleted before dilation to stop rooms merging. In the context of the office scene, if the dilation distance is set to segment the conference room, it is likely to cause the deletion of the smaller boundary rooms like the bathrooms.
+
+\noindent \textbf{Room Shattering} \\
+Clio adopts a different approach by clustering nearby object primitives based on their similarity towards a given task. However, when a room has lots of spaced out or undetected objects, it fails to cluster them and results in a shattered version of the room with multiple region nodes.
+These approaches led to the results shown in \ref{sec:res:room-seg}, with Hydra’s under-segmentation due to dilation distance, and Clio’s over-segmentation due to room shattering.
+
+\begin{figure}[H]
+    \centering
+    % First image
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/room-seg-problem.png}
+        \caption{Private Office Recognised as Room at First.}
+        \label{fig:room-seg-problem}
+    \end{minipage}
+    \hfill % Adds horizontal space between the images
+    % Second image
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/room-seg-problem2.png}
+        \caption{Private Office Room Node Merged into Open-Space Office.}
+        \label{fig:room-seg-problem2}
+    \end{minipage}
+\end{figure}
+
+\subsection{Clio Perception: Recording Technique}\label{sec:disc-clio-rec}
+
+As outlined in sections \ref{sec:res:room-seg} and \ref{sec:res:objects}, Clio’s object detection was significantly poor compared to it’s expected output from the example dataset. This stark range of results suggest potential sensitivity to robot perception constraints. 
+
+The example datasets for Clio are recorded using a handheld camera maintaining short distance (approx. 1m) to things like desk cubicles etc. This recording method allows for more flexibility in terms of angles and coverage. This allows for perceiving more angles of specific objects which gives Clio more frames to initialise the object primitive. As discussed in \ref{subsec:clio}, more frames of the same object allows a higher semantic embedding which results in a better 3D primitive. Due to the custom office scene using a differential drive robot with a fixed camera at torso height, this meant that there was a lack of angular variety compared to a camera in a human arm. Due to little variance in the object features, it is likely that there was insufficient CLIP embeddings to create an object node.
+
+Some of the architectural tasks discussed before included remote visualisation and inventory. The generic robot that would be used for these tasks is likely to be similar to the setup used to record the dataset. After considering this context, instead of creating a new dataset pipeline around this limitation, it was kept for critical architectural potential. If a robot had to keep wiggling around a desk to get different views of objects, this would be inefficient in terms of battery and time.
 
 %\lipsum[31-32]
 
