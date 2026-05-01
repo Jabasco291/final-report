@@ -17,7 +17,7 @@ This chapter presents the results and evaluates them. Describe how the solution 
 
 %\lipsum[27-28]
 
-\section{Results}\label{sec:results}
+\section{Simulation Results}\label{sec:sim-results}
 % Main findings: present tables and figures; summarise key outcomes. Optional
 % subsections: by research question, by dataset, or by metric.
 
@@ -172,9 +172,7 @@ However, as outlined in section \ref{sec:sim-setup}, Clio required the rosbag to
 
 %\lipsum[29-30]
 
-\section{Real-World Results}\label{sec:r-w-results}
-
-\section{Discussion}\label{sec:discussion}
+\section{Simultation Discussion}\label{sec:sim-discussion}
 % Critical appraisal: strengths, weaknesses, methodology choices; comparison
 % with prior work. Optional: ablation analysis, sensitivity analysis.
 
@@ -222,6 +220,123 @@ The example datasets for Clio are recorded using a handheld camera maintaining s
 Some of the architectural tasks discussed before included remote visualisation and inventory. The generic robot that would be used for these tasks is likely to be similar to the setup used to record the dataset. After considering this context, instead of creating a new dataset pipeline around this limitation, it was kept for critical architectural potential. If a robot had to keep wiggling around a desk to get different views of objects, this would be inefficient in terms of battery and time.
 
 %\lipsum[31-32]
+
+\section{Real-World Results}\label{sec:r-w-results}
+
+This section provides a qualitative assessment of Hydra's performance on a custom recording of the \gls{hccr} laboratory. 
+
+\subsection{Graph Images:}\label{subsec:real-images}
+
+The following figures show the Hydra 3D scene graph generated on the HCCR lab dataset.
+
+\begin{figure}[H]
+    \centering
+    % First image
+    \begin{minipage}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/full_mesh.png}
+        \caption{Hydra 3D Scene Graph of HCCR Lab. Including Mesh Layer}
+        \label{fig:full-mesh}
+    \end{minipage}
+    \hfill % Adds horizontal space between the images
+    % Second image
+    \begin{minipage}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/full_no_mesh.png}
+        \caption{Hydra 3D Scene Graph of HCCR Lab. Without Mesh Layer}
+        \label{fig:full-no-mesh}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    % First image
+    \begin{minipage}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/real_storage.jpeg}
+        \caption{Image of Storage Cabinets in HCCR Lab.}
+        \label{fig:real-storage}
+    \end{minipage}
+    \hfill % Adds horizontal space between the images
+    % Second image
+    \begin{minipage}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/storage.png}
+        \caption{Snapshot of Hydra 3D Scene Graph of Storage Cabinets Section. (Taken from perspective of behind the wall in \ref{fig:real-storage})}
+        \label{fig:storage}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    % First image
+    \begin{minipage}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/real_wall_dec.jpeg}
+        \caption{Image of Wall Decorations in HCCR Lab.}
+        \label{fig:real-wall-dec}
+    \end{minipage}
+    \hfill % Adds horizontal space between the images
+    % Second image
+    \begin{minipage}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/wall_decorations.png}
+        \caption{Snapshot of Hydra 3D Scene Graph of Wall Decorations Section. (Taken from perspective of behind the right wall in \ref{fig:real-wall-dec})}
+        \label{fig:wall-decs}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    % First image
+    \begin{minipage}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/real_workstation.jpeg}
+        \caption{Image of Workstation in HCCR Lab.}
+        \label{fig:real-workstation}
+    \end{minipage}
+    \hfill % Adds horizontal space between the images
+    % Second image
+    \begin{minipage}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/workstations.png}
+        \caption{Snapshot of Hydra 3D Scene Graph of Workstation Section. (Taken from perspective of behind the right wall in \ref{fig:real-workstation})}
+        \label{fig:workstation}
+    \end{minipage}
+\end{figure}
+
+\subsection{Mesh Reconstruction:}\label{subsec:real-mesh}
+Unlike the mesh observed on simulation data (fig hydra), the real-world results shown in fig \ref{fig:full-mesh} yielded a partially complete reconstruction, resembling a fragmented representation of the scene. This is likely due to the gap between a handheld camera with real-world noise, contrasted to a perfect simulation environment.
+
+\subsection{Object Detection / Semantics:}\label{subsec:real-object-detection}
+Hydra correctly identified key objects in the scene.
+
+\noindent \textbf{Storage Area (Fig \ref{fig:real-storage}):}
+
+This corner of the lab has lots of storage cabinets along with a robot arm. As shown in fig \ref{fig:storage}, it correctly identified the cabinets, and the shelf. However it didn’t pickup the robot arm (behind the shelf on the table), this is likely due to the arm being occluded by the shelves, limiting coverage of it.
+
+\noindent \textbf{Wall Decorations (Fig \ref{fig:real-wall-dec}):}
+
+Another corner of the lab contained a workstation. Fig \ref{fig:wall-decs} shows that Hydra managed to identify the posters on the wall as wall decorations, this demonstrates Hydra’s ability to semantic label beyond simply geometric objects.
+
+\noindent \textbf{Workstation Area (Fig \ref{fig:real-workstation}):}
+
+The workstation section of the lab contains multiple computers and different types of chairs. Fig \ref{fig:workstation} shows that Hydra had the same behaviour as outlined in section \ref{sec:res:semantic}, where it classifies computers and monitors as “Thing” due to it not being in the label space. It also appears to segment all the smaller robots in the corner as one large “Thing” node, which is likely due to the limited coverage in the dataset meaning Hydra only gets a small view of all of them together.
+
+Another notable observation is the difference in chairs, throughout the scene Hydra struggles with identifying the wheel-style chairs, however as shown in fig \ref{fig:workstation} it successfully identifies the basic chair in the centre of image \ref{fig:real-workstation}. This is likely due to the data which the neural network used to label objects is trained with, as the profile of a wheeled chair differs to the standard four-legged chair.
+
+\subsection{Room Segmentation:}\label{subsec:real-room-segmentation}
+Hydra correctly segmented only one room, which is correct as the laboratory is one large room containing regions like workspaces, a robot arm and storage cabinets.
+
+\subsection{Practicality:}\label{subsec:real-practicality}
+Similar to the capabilities exhibited in the simulation environment, Hydra was capable of processing the lab recording in real-time playback speed. 
+
+However, unlike the simulation dataset which included TF data, the ZED camera only records raw sensor data without expected ROS format. This required a static transform to be published to define the robot frame, and a custom node was written to republish odometry data as dynamic TF transforms (as Hydra processes pose via TF rather than raw odometry). This highlights the additional setup needed when using real-world data rather than simulation.
+
+\subsection{Summary:}\label{subsec:real-summary}
+Overall, Hydra demonstrated a competent integration from simulation to real-world performance. It successfully constructs a semantically labelled scene to a good recall quality, with the only difference between the two domains being the 3D mesh reconstruction. However, this is expected when moving from perfect environmental conditions to a handheld real-world noisy environment.
+
+\section{Real-World Discussion}\label{sec:r-w-discussion}
 
 \section{Limitations}\label{sec:limitations}
 % Limitations, threats to validity, and suggested further tests if not all done.
