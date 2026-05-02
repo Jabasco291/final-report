@@ -17,6 +17,44 @@ This chapter presents the results and evaluates them. Describe how the solution 
 
 %\lipsum[27-28]
 
+\section{Simulation Output}\label{sec:sim-output}
+
+The following figures show the 3D Scene Graph output for each of the three methods when deployed on the custom office dataset.
+
+\subsection{S-Graphs+}\label{sec:sub:sim-sgraph-output}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/final-sgraph.png}
+    \caption{S-Graphs+ Output}
+    \label{fig:sgraph}
+\end{figure}
+
+\subsection{Hydra}\label{sec:sub:sim-hydra-output}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/final-hydra.png}
+    \caption{Hydra Output}
+    \label{fig:hydra}
+\end{figure}
+
+\subsection{Clio}\label{sec:sub:sim-clio-output}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{figures/final-clio-mesh.png}
+    \caption{Clio Output with Mesh Layer Visible.}
+    \label{fig:clio-mesh}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{figures/final-clio-no-mesh.png}
+    \caption{Clio Output with Mesh Layer Hidden.}
+    \label{fig:clio-no-mesh}
+\end{figure}
+
 \section{Simulation Results}\label{sec:sim-results}
 % Main findings: present tables and figures; summarise key outcomes. Optional
 % subsections: by research question, by dataset, or by metric.
@@ -211,6 +249,12 @@ These approaches led to the results shown in \ref{sec:res:room-seg}, with Hydra�
     \end{minipage}
 \end{figure}
 
+\subsection{Hydra: Semantic Aliasing}\label{sec:disc-semantics}
+
+As shown in section \ref{sec:res:semantic}, Hydra excelled at identifying chairs, however a lot of objects within the scene were not included in the label space and hence got categorised as “Thing”. A key example of this are the computers and monitors in the office scene, which the Ade20k indoor model was not trained to detect. This highlights the main limitation of Closed-Set semantics, as the model training must fit the scene in order to be accurate. Clio addresses this by using Open-Set semantics, meaning it uses provided tasks and regions in order to create labels for objects/regions. This approach therefore creates a more adaptable system in terms of semantics.
+
+Another limitation outlined in section \ref{sec:res:semantic} showed Hydra classifying flat surfaces like storage and structure as “Table”. This is likely to do with the similarities in geometrics of these types of objects as the model see straight long edges and confuses cabinets with tables, creating a geometric bias in object detection.
+
 \subsection{Clio Perception: Recording Technique}\label{sec:disc-clio-rec}
 
 As outlined in sections \ref{sec:res:room-seg} and \ref{sec:res:objects}, Clio’s object detection was significantly poor compared to it’s expected output from the example dataset. This stark range of results suggest potential sensitivity to robot perception constraints. 
@@ -219,13 +263,31 @@ The example datasets for Clio are recorded using a handheld camera maintaining s
 
 Some of the architectural tasks discussed before included remote visualisation and inventory. The generic robot that would be used for these tasks is likely to be similar to the setup used to record the dataset. After considering this context, instead of creating a new dataset pipeline around this limitation, it was kept for critical architectural potential. If a robot had to keep wiggling around a desk to get different views of objects, this would be inefficient in terms of battery and time.
 
+\subsection{Clio Practicality}\label{sec:disc-clio-practicality}
+
+As described in section \ref{sec:sim-setup}, Clio required the custom office scene to be played at 0.25x playback speed in order to process frames and not crash the system. Due to Clio performing flawlessly with the example dataset, this suggests a lack of adaptability to the custom office dataset. 
+
+After reviewing the example dataset, it was observed to be recorded at close range pointed at specific sections of the scene, for example office cubicles. This is a different domain to the custom office dataset which was recorded using a differential drive robot with a fixed camera joint. This limits the robot for getting close up perspectives like the ones in the example, instead supplying wide-angle views with containing more objects and segments. This forces Clio to apply semantic segmentation to multiple objects simultaneously per frame, dramatically increasing the computational load.
+
+However, it is vital to note that these tests were ran on a HCCR lab computer containing (specs), compared to the reported specs used in the Clio paper (24-core CPU, 64GB RAM, NVIDIA GeForce RTX 4090 Laptop GPU). This could suggest that hardware requirement had a reason for the hindering performance.
+
 %\lipsum[31-32]
+
+\section{Best-Performing Method Justification}\label{sec:res:best-method}
+
+S-Graphs+ narrowly stood out as the most accurate for room segmentation, with F1 score (0.61) in front of Clio (0.60) and Hydra (0.55), this is expected due to the structural focus of the method. However, due to the negligible margin alongside the absence of object detection and semantic understanding, S-Graphs+ is not suitable for architectural tasks which require higher-level knowledge such as inventorying or building management.
+
+Clio demonstrated accurate room recall with perfect semantic understanding at the room level. However, as reported in \ref{sec:res:objects} and discussed in section \ref{sec:disc-clio-rec}, Clio struggled to emulate the quality of object detection observed in the example dataset when deployed on the custom office dataset. As well as this, Clio struggled with real-time processing which is a fundamental requirement for SLAM systems. These two vital limitations exclude Clio from real-time tasks such as remote visualisation.
+
+Hydra balanced high precision for room segmentation (F1: 0.55), with robust object detection (F1: 0.61). Alongside this, it reflected consistency with low object drift per-run (Avg: 0.16m). These results demonstrate Hydra’s capability to maintain a metric-semantic accurate graph in real-time with natural robot movement.
+
+Comparing the strengths and weaknesses of each method, Hydra can be concluded as the most competent all-round method for architectural tasks, such as inventorying and remote visualisation. This is due to the quality of object detection and room segmentation, along with the real-time playback capabilities.
 
 \section{Real-World Results}\label{sec:r-w-results}
 
 This section provides a qualitative assessment of Hydra's performance on a custom recording of the \gls{hccr} laboratory. 
 
-\subsection{Graph Images:}\label{subsec:real-images}
+\subsection{Graph Images}\label{subsec:real-images}
 
 The following figures show the Hydra 3D scene graph generated on the HCCR lab dataset.
 
@@ -305,10 +367,10 @@ The following figures show the Hydra 3D scene graph generated on the HCCR lab da
     \end{minipage}
 \end{figure}
 
-\subsection{Mesh Reconstruction:}\label{subsec:real-mesh}
+\subsection{Mesh Reconstruction}\label{subsec:real-mesh}
 Unlike the mesh observed on simulation data (fig hydra), the real-world results shown in fig \ref{fig:full-mesh} yielded a partially complete reconstruction, resembling a fragmented representation of the scene. This is likely due to the gap between a handheld camera with real-world noise, contrasted to a perfect simulation environment.
 
-\subsection{Object Detection / Semantics:}\label{subsec:real-object-detection}
+\subsection{Object Detection / Semantics}\label{subsec:real-object-detection}
 Hydra correctly identified key objects in the scene.
 
 \noindent \textbf{Storage Area (Fig \ref{fig:real-storage}):}
@@ -325,18 +387,16 @@ The workstation section of the lab contains multiple computers and different typ
 
 Another notable observation is the difference in chairs, throughout the scene Hydra struggles with identifying the wheel-style chairs, however as shown in fig \ref{fig:workstation} it successfully identifies the basic chair in the centre of image \ref{fig:real-workstation}. This is likely due to the data which the neural network used to label objects is trained with, as the profile of a wheeled chair differs to the standard four-legged chair.
 
-\subsection{Room Segmentation:}\label{subsec:real-room-segmentation}
+\subsection{Room Segmentation}\label{subsec:real-room-segmentation}
 Hydra correctly segmented only one room, which is correct as the laboratory is one large room containing regions like workspaces, a robot arm and storage cabinets.
 
-\subsection{Practicality:}\label{subsec:real-practicality}
+\subsection{Practicality}\label{subsec:real-practicality}
 Similar to the capabilities exhibited in the simulation environment, Hydra was capable of processing the lab recording in real-time playback speed. 
 
 However, unlike the simulation dataset which included TF data, the ZED camera only records raw sensor data without expected ROS format. This required a static transform to be published to define the robot frame, and a custom node was written to republish odometry data as dynamic TF transforms (as Hydra processes pose via TF rather than raw odometry). This highlights the additional setup needed when using real-world data rather than simulation.
 
-\subsection{Summary:}\label{subsec:real-summary}
+\subsection{Summary}\label{subsec:real-summary}
 Overall, Hydra demonstrated a competent integration from simulation to real-world performance. It successfully constructs a semantically labelled scene to a good recall quality, with the only difference between the two domains being the 3D mesh reconstruction. However, this is expected when moving from perfect environmental conditions to a handheld real-world noisy environment.
-
-\section{Real-World Discussion}\label{sec:r-w-discussion}
 
 \section{Limitations}\label{sec:limitations}
 % Limitations, threats to validity, and suggested further tests if not all done.

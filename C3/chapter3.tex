@@ -64,34 +64,36 @@ As stated above, the evaluation criteria aimed to address 3 sections: Metric acc
 \centering
 \caption{Comparative Evaluation Framework}
 \label{tab:metric-table}
-\begin{tabular}{l l p{7cm}}
-\toprule
-\textbf{Category} & \textbf{Metric} & \textbf{Purpose} \\
-\midrule
-\multirow{4}{*}{\textbf{Structural}}
-    & Node Count              & Assesses structural reproducibility across runs \\
-    & Room Count              & Assesses room detection accuracy \\
-    & Room Centroid Accuracy  & Assesses room localisation accuracy \\
-\midrule
-\multirow{4}{*}{\textbf{Objects}}
-    & Recall, Precision, F1          & Measures completeness and accuracy of object detection \\
-    & Per Run Object Drift               & Assesses object localisation consistency \\
-    & Centroid mED                   & Assesses spatial accuracy of object localisation \\
-    & IoU Bounding Box Overlap       & Measures spatial accuracy of detected bounding boxes \\
-\midrule
-\multirow{2}{*}{\textbf{Semantic Accuracy}}
-    & Object Confusion Matrix        & Assesses per-class labelling accuracy and consistency \\
-    & Room Confusion Matrix (Clio)        & Assesses per-room labelling accuracy and consistency \\
-    & Label Distribution      & Assesses semantic completeness for object detection \\
-\midrule
-\multirow{2}{*}{\textbf{Performance}}
-    & Front-end / Back-end Timing & Measures run-time performance \\
-    & Real-time Capability        & Assesses viability for real-world deployment \\
-\midrule
-\textbf{Architectural Suitability}
-    & Qualitative Assessment  & Evaluates overall usefulness for inventorying, remote visualisation and navigation \\
-\bottomrule
-\end{tabular}
+\makebox[\textwidth][c]{
+    \begin{tabular}{l l p{7cm}}
+    \toprule
+    \textbf{Category} & \textbf{Metric} & \textbf{Purpose} \\
+    \midrule
+    \multirow{4}{*}{\textbf{Structural}}
+        & Node Count (Total, Room, Object)              & Assesses structural reproducibility across runs \\
+        & Room Count              & Assesses room detection accuracy \\
+        & Room Recall, Precision, F1  & Measures room completeness \& accuracy \\
+    \midrule
+    \multirow{4}{*}{\textbf{Objects}}
+        & Recall, Precision, F1          & Measures completeness \& accuracy of object detection \\
+        & Per Run Object Drift               & Measures object localisation consistency \\
+        & Centroid mED                   & Measures spatial accuracy of object localisation \\
+        & IoU Bounding Box Overlap       & Measures spatial accuracy of detected bounding boxes \\
+    \midrule
+    \multirow{2}{*}{\textbf{Semantic Accuracy}}
+        & Object Confusion Matrix        & Assesses per-class labelling accuracy and consistency \\
+        & Room Confusion Matrix (Clio)        & Assesses per-room labelling accuracy and consistency \\
+        & Label Distribution      & Assesses semantic completeness for object detection \\
+    \midrule
+    \multirow{2}{*}{\textbf{Performance}}
+        & Front-end / Back-end Timing & Measures run-time performance \\
+        & Real-time Capability        & Assesses viability for real-world deployment \\
+    \midrule
+    \textbf{Architectural Suitability}
+        & Qualitative Assessment  & Evaluates overall usefulness for inventorying, remote visualisation and navigation \\
+    \bottomrule
+    \end{tabular}
+}
 \end{table}
 
 %\lipsum[17-18]
@@ -132,9 +134,9 @@ A key deployment limitation was observed with Clio. The rosbag image data had to
 
 \subsection{Real-World}\label{sec:real-setup}
 
-The simulation phase concluded that Hydra was the best-performing method as an all round system (discussed in Section \ref{sec:discussion}). Therefore, this meant 3D LiDAR data wasn’t required for the real-world deployment due to S-Graphs+ being excluded from this stage.
+The simulation phase concluded that Hydra was the best-performing method as an all round system (discussed in Section \ref{sec:res:best-method}). Therefore, this meant 3D LiDAR data wasn’t required for the real-world deployment due to S-Graphs+ being excluded from this stage.
 
-The ZED camera was the optimal choice for recording the scene due to its simple setup and RGB-D capabilities alongside pose estimates. To mimic the perspective of a traversal robot like Reachy2, The camera was handheld at torso height (approx. 1.2m) whilst being walked slowly around the HCCR lab.
+The ZED camera was the optimal choice for recording the scene due to its simple setup and RGB-D capabilities alongside pose estimates, it was set to record 720p quality at 30Hz, which enabled sufficient quality and coverage. To mimic the perspective of a traversal robot like Reachy2, The camera was handheld at torso height (approx. 1.2m) whilst being walked slowly around the HCCR lab.
 
 As the ZED camera naturally lacks ROS message outputs, the svo2 formatted video was extracted into RGB and Depth frames along with pose history of the robot. This data was then encoded into a ROS2 bag recording which can be processed by Hydra.
 
