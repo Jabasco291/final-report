@@ -170,7 +170,11 @@ S-Graphs+ was installed natively with ROS2 Humble as it was the most lightweight
 
 Hydra was ran through a Docker container with ROS2 Jazzy sourced from the official Hydra-ROS github \cite{hydra-ros-docker}. This setup allowed smooth running in parallel with S-Graphs+ as it removes ROS version conflicts. The Docker also allowed smooth operation due to the pre-installed dependencies for things such as CUDA and TensorRT, avoiding manual dependency configuration.
 
+The original deployment system was a personal laptop with AMD Ryzen 5000 Series with AMD Radeon Graphics, a problem arose when deploying Hydra where only coordinate frames were updating, with no graph being built. This was identified for a lack of NVIDIA graphics to run TensorRT and CUDA. Once identified, deployment was moved to a HCCR lab computer which had more computing power (see Table \ref{tab:hardware_specs} for full details).
+
 Clio was deployed using a ROS Noetic Docker sourced from \cite{cliodocker}. The decision to use a Docker was more important for this method due to the fact it needs ROS1 instead of ROS2. Whilst trying to build the workspace, an issue was identified which caused build failures. It was caused due to Clio being a ROS1 system, when some core dependencies had switched their default branches to ROS2, causing incompatibility failures. This was a known problem discussed in a community forum, which led to the discovery of a community-built container which explicitly uses the old ROS1 version of dependencies.
+
+The setup of one native and two Dockerised methods enabled smooth transition between running each method, by only changing the active environment rather than reinstalling ROS versions. This made the deployment process more practical given the time constraints of the project.
 
 \subsection{Robot Configuration and Data Recording}\label{sec:sim-robot-config}
 
@@ -180,7 +184,7 @@ As only S-Graphs+ uses LiDAR data and the other methods use RGB-D, the URDF conf
 
 The robot was then teleoperated around the office scene to capture the rosbag data. This allowed control over the scene coverage and trajectory as well as simulating a realistic scenario for building visualistion.
 
-The resultant custom office rosbag was a 317s recording, the topics are shown in Table \ref{tab:rosbag-topics} below.
+The resultant custom office rosbag was a 317s recording, which was long enough to explore multiple rooms of different sizes (to assess room segmentation). The topics recorded in the rosbag are shown in Table \ref{tab:rosbag-topics} below.
 
 \begin{table}[H]
 \centering
