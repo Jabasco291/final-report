@@ -269,7 +269,7 @@ As described in section \ref{sec:sim-setup}, Clio required the custom office sce
 
 After reviewing the example dataset, it was observed to be recorded at close range pointed at specific sections of the scene, for example office cubicles. This is a different domain to the custom office dataset which was recorded using a differential drive robot with a fixed camera joint. This limits the robot for getting close up perspectives like the ones in the example, instead supplying wide-angle views with containing more objects and segments. This forces Clio to apply semantic segmentation to multiple objects simultaneously per frame, dramatically increasing the computational load.
 
-However, it is vital to note that these tests were ran on a HCCR lab computer containing (specs), compared to the reported specs used in the Clio paper (24-core CPU, 64GB RAM, NVIDIA GeForce RTX 4090 Laptop GPU). This could suggest that hardware requirement had a reason for the hindering performance.
+However, it is vital to note the difference in hardware specifications which are outlined in table \ref{tab:hardware_specs}. This could suggest that hardware requirement had a reason for the hindering performance.
 
 %\lipsum[31-32]
 
@@ -403,13 +403,49 @@ Overall, Hydra demonstrated a competent integration from simulation to real-worl
 
 \subsection{Dataset Context}\label{sec:lim:context}
 
+The dataset used for the evaluation is a 1-floor office scene. It provides different room types, a large room, medium room, and small rooms which are good for analysing room segmentation for varying room sizes. This provided the grounds for the discussion in section \ref{sec:disc-room-seg}.
+
+However, the dataset only spanned 1 floor, which means room and floor segmentation can not be assessed, which is an entire layer in the S-Graphs+ graph (floor layer). As well as this, the evaluation only considered one usage domain due to the office context. The evaluation could have reflected different results when compared to the usage in a warehouse or hospital scene.
+
 \subsection{Hardware}\label{sec:lim:hardware}
+
+As touched on in section \ref{sec:disc-clio-practicality}, the evaluation was conducted on a HCCR lab computer. Table \ref{tab:hardware_specs} below shows the different specs reported in the papers for each method.
+
+\begin{table}[H]
+\centering
+\caption{Evaluation Hardware Specifications.}
+\label{tab:hardware_specs}
+\makebox[\textwidth][c]{
+    \begin{tabular}{l | l | c | l}
+    \toprule
+    \textbf{Method} & \textbf{CPU} & \textbf{RAM} & \textbf{GPU} \\
+    \midrule
+    Evaluation Specs & Intel i7-6700K (4 cores) & 16 GB & NVIDIA GeForce RTX 2070 \\
+    S-Graphs+        & Not Reported & Not Reported & Not Reported \\
+    Hydra            & AMD Ryzen 9 3960X (24 cores) & Not Reported & 2x NVIDIA RTX 3080 \\
+    Clio             & Intel i9-13950HX (24 cores) & 64 GB & NVIDIA GeForce RTX 4090 Laptop GPU \\
+    \bottomrule
+    \end{tabular}
+}
+\end{table}
+
+This shows the stark difference between the hardware in the paper versions and the evaluation deployments. This suggests a potential skew in the practicality results from the evaluation, most notably the timings statistics in section \ref{sec:res:practicality}. The largest hardware gap is with Clio, where all the hardware is around two generations behind the expected specs, therefore this could explain the practicality problems discussed in section \ref{sec:disc-clio-practicality}.
+
+However, this can be interpreted as a realistic reflection of the deployment available in the architectural industry. Some architectural companies might not have the highest-end computational hardware available, which means this evaluation reports the honest quality to be expected.
 
 \subsection{Recording Technique}\label{sec:lim:recording-style}
 
+As discussed in section \ref{sec:disc-clio-rec}, the nature of the differential drive robot with a fixed camera joint limits the coverage of the specifics of the environment, like items on desks. Without testing on different recording domains, it cannot be determined whether Clio’s struggles reflects system weaknesses or data input limitations.
+
+Whilst this setup will represent a large portion of the available recording setup available in the real-world. Other configurations like Reachy2 \cite{Reachy2}, which supports an omnidirectional base with a rotatable camera would be able to provide greater coverage of the scene. This could help the Clio instantiate objects by providing multiple angles of objects. The increased coverage would also allow more LiDAR data for S-Graphs+ and more object exposure for Hydra’s object detection.
+
 \subsection{Real-World Environment}\label{sec:lim:environment}
 
+As shown in section \ref{subsec:real-images}, the HCCR lab consists of one large room. This means Hydra’s capability of room segmentation on real-world data could not be analysed using this dataset. An environment with multiple rooms and floors would allow evaluation of real-world room segmentation and how the dilation problem outlined in section \ref{sec:disc-room-seg} transfers over to real-world data.
+
 \subsection{Lack of S-Graphs+ Data}\label{sec:lim:sgraphs}
+
+The evaluation metrics were designed around metric and semantic capabilities. Due to S-Graphs+ being a metric-only system, this created a disadvantage for when the whole systems were evaluated due to its lack of semantic understanding.
 
 
 

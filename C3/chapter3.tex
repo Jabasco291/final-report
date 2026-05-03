@@ -39,6 +39,23 @@ Simulation results were evaluated quantitatively to determine the highest-perfor
 \section{Specification}\label{sec:specification}
 % what should they need to do (what requirements assessing)
 
+To evaluate the suitability of the candidate methods for architectural tasks, requirements are categorised into Mandatory and Desirable requirements. These define the fundamental capabilities for SLAM operations and the ideal capabilities for higher-level architectural tasks such as inventorying.
+
+\subsection{Mandatory Requirements}\label{sec:spec:mandatory}
+
+\begin{itemize}
+    \item \textbf{Hierarchical Scene Representation:} The method must generate a 3D scene graph with multiple abstraction layers to provide architectural context.
+    \item \textbf{Spatial Segmentation:} The method must be able to segment environments into distinct room nodes.
+    \item \textbf{ROS Compatibility:} The method must be compatible with ROS (Robot Operating System) input data for processing simulation data.
+    \item \textbf{Operational Stability:} The method must be able to process a 5-minute office scene without fatal errors.
+    \item \textbf{Quantitative Evaluation:} The evaluation framework must calculate Recall, Precision, and F1-score for room nodes and object nodes where applicable.
+\end{itemize}
+
+\subsection{Desirable Requirements}\label{sec:spec:desirable}
+\begin{itemize}
+    \item \textbf{Semantic Object Layer:} The system should provide a semantic object layer to support automated inventorying or interactive tasks.
+\end{itemize}
+
 %\lipsum[13-14]
 
 \section{Candidate Methods}\label{sec:methods}
