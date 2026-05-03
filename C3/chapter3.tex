@@ -162,9 +162,51 @@ As the ZED camera naturally lacks ROS message outputs, the svo2 formatted video 
 \section{Implementation}\label{sec:implementation}
 % how deploy in real-world, what tech
 
-\subsection{Simulation}\label{sec:sim-implem}
+\subsection{Simulation Environment Setup}\label{sec:sim-env-setup}
 
-\subsection{Real-World}\label{sec:real-implem}
+Each method requires different ROS environments. There was no ROS version which was supported by all three methods simultaneously. To ensure a smooth deployment of all three methods, Docker was used to help maintain three separate environments.
+
+S-Graphs+ was installed natively with ROS2 Humble as it was the most lightweight of the candidate methods and didn’t require any major dependencies like CUDA. To ensure a smooth installation and integration to a custom dataset, the instructions from \cite{sgraphs-install} were followed.
+
+Hydra was ran through a Docker container with ROS2 Jazzy sourced from the official Hydra-ROS github \cite{hydra-ros-docker}. This setup allowed smooth running in parallel with S-Graphs+ as it removes ROS version conflicts. The Docker also allowed smooth operation due to the pre-installed dependencies for things such as CUDA and TensorRT, avoiding manual dependency configuration.
+
+Clio was deployed using a ROS Noetic Docker sourced from \cite{cliodocker}. The decision to use a Docker was more important for this method due to the fact it needs ROS1 instead of ROS2. Whilst trying to build the workspace, an issue was identified which caused build failures. It was caused due to Clio being a ROS1 system, when some core dependencies had switched their default branches to ROS2, causing incompatibility failures. This was a known problem discussed in a community forum, which led to the discovery of a community-built container which explicitly uses the old ROS1 version of dependencies.
+
+\subsection{Robot Configuration and Data Recording}\label{sec:sim-robot-config}
+
+The robot configuration used to record the custom dataset was sourced from \cite{mobile-3d-lidar-sim}, which contains a differential drive robot with a Velodyne 3D LiDAR sensor, which was the baseline platform for data collection. 
+
+As only S-Graphs+ uses LiDAR data and the other methods use RGB-D, the URDF configuration was modified to add a camera on a pole. The camera specification was set to be similar to a Realsense D435 which is widely used in robotics research, it was attached around 1.2m up the pole to simulate torso height perspective. The robot was setup to emulate the Reachy2 robot \cite{Reachy2} style which is a realistic system that could be used for architectural tasks like building visualisation.
+
+The robot was then teleoperated around the office scene to capture the rosbag data. This allowed control over the scene coverage and trajectory as well as simulating a realistic scenario for building visualistion.
+
+The resultant custom office rosbag was a 317s recording, the topics are shown in Table \ref{tab:rosbag-topics} below.
+
+\begin{table}[H]
+\centering
+\caption{Custom office rosbag ROS topics, their sources, and usage by methods.}
+\label{tab:rosbag-topics}
+\begin{tabular}{lll}
+\toprule
+\textbf{ROS Topic} & \textbf{Source} & \textbf{Used By} \\
+\midrule
+PointCloud2         & Velodyne LiDAR & S-Graphs+ \\
+Image (RGB)         & Camera         & Hydra, Clio \\
+Image (Depth)       & Camera         & Hydra, Clio \\
+CameraInfo (RGB)    & Camera         & Hydra, Clio \\
+CameraInfo (Depth)  & Camera         & Hydra, Clio \\
+Odometry            & ---              & All methods \\
+TFMessage           & ---              & All methods \\
+TFMessage (static)  & ---              & All methods \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+PointCloud2 data is used by S-Graphs+ while the image data is used by Hydra and Clio. Odometry and TF is used throughout all methods for localisation.
+
+\subsection{Real-World Data Pipeline}\label{sec:real-data-pipeline}
+
+\subsection{Evaluation Scripts}\label{sec:sim-eval-scripts}
 
 %\lipsum[21-22]
 
