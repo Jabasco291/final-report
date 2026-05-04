@@ -20,16 +20,16 @@
 % =============================================================================
 
 
-This chapter describes how the problem was addressed. Choose sections that fit your project type; omit or merge as needed. Replace with enough detail for reproduction.
+This chapter describes how the evaluation design, specification, justification for the inclusion of each candidate method, metric framework evaluated, the experimental setup for both simulation and real-world deployment, and the implementation description.
 
 %\lipsum[9-10]
 
 \section{Research design}\label{sec:research-design}
 % Research: overall approach, methods (e.g.\@ quantitative, qualitative, design science), rationale. Omit for pure system-design projects.
 
-This project presents a comparative evaluation across 3 state-of-the-art candidate methods: S-Graphs+\cite{s_graphs_plus}, Hydra\cite{hydra} and Clio\cite{clio}. 
+This project presents a comparative evaluation across three state-of-the-art candidate methods: S-Graphs+\cite{s_graphs_plus}, Hydra\cite{hydra} and Clio\cite{clio}. 
 
-The methods were evaluated over five executions on a controlled and consistent simulation environment. This highest-performing method was determined through evaluation of 3 main categories: Metric accuracy, Semantic accuracy and Practical feasibility. This chosen system was then deployed on real-world sensor data of the \gls{hccr} laboratory.
+The methods were evaluated over five executions on a controlled and consistent simulation environment. This highest-performing method was determined through evaluation of three main categories: Metric accuracy, Semantic accuracy and Practical feasibility. This chosen system was then deployed on real-world sensor data of the \gls{hccr} laboratory.
 
 Each method was deployed on the same simulated environment. The sensor data was recorded in a single rosbag using a RGB-D camera (Hydra and Clio) and 3D LiDAR sensor (S-Graphs+) which were attached to a differential drive robot and teleoperated around the scene. The methods resulted in a 3D scene graph, which was then saved in JSON format for further statistical evaluation. 
 Simulation results were evaluated quantitatively to determine the highest-performing statistically, then the real-world results were evaluated qualitatively. This is because ground-truth is accessible for simulation environments like Gazebo, however generating ground-truth can be complicated for real-world data.
@@ -47,7 +47,7 @@ To evaluate the suitability of the candidate methods for architectural tasks, re
     \item \textbf{Hierarchical Scene Representation:} The method must generate a 3D scene graph with multiple abstraction layers to provide architectural context.
     \item \textbf{Spatial Segmentation:} The method must be able to segment environments into distinct room nodes.
     \item \textbf{ROS Compatibility:} The method must be compatible with ROS (Robot Operating System) input data for processing simulation data.
-    \item \textbf{Operational Stability:} The method must be able to process a 5-minute office scene without fatal errors.
+    \item \textbf{Operational Stability:} The method must be able to process a five-minute office scene without fatal errors.
     \item \textbf{Quantitative Evaluation:} The evaluation framework must calculate Recall, Precision, and F1-score for room nodes and object nodes where applicable.
 \end{itemize}
 
@@ -61,7 +61,7 @@ To evaluate the suitability of the candidate methods for architectural tasks, re
 \section{Candidate Methods}\label{sec:methods}
 % how each works and differ
 
-The three candidate methods are S-Graphs+\cite{s_graphs_plus}, Hydra\cite{hydra} and Clio\cite{clio}. Below is a brief explanation of how each method works and why they were chosen for the evaluation.
+The three candidate methods are S-Graphs+\cite{s_graphs_plus}, Hydra\cite{hydra} and Clio\cite{clio}. Below is a brief explanation of their main characteristics and why they were chosen for the evaluation.
 
 S-Graphs+ takes 3D LiDAR point cloud as input. It then analyses the point cloud to identify geometric planes, which are then used to detect rooms. The hierarchical structure consists of Keyframes, Walls, Rooms, Floors. There is no object segmentation or semantic labelling, its output mostly contains navigation and structural information. This method was selected to observe how its purely geometric structure would compare to methods which also incorporate semantics.
 
@@ -74,7 +74,7 @@ Clio takes a different approach to the other candidate methods. Instead of being
 \section{Comparative Evaluation Framework}\label{sec:eval-framework}
 % criteria, metrics, how compare (accuracy, labelling etc)
 
-As stated above, the evaluation criteria aimed to address 3 sections: Metric accuracy, Semantic accuracy and Practical feasibility. These sections were split up into specific and comparable metrics stated in Table \ref{tab:metric-table} below:
+As stated above, the evaluation criteria aimed to address three sections: Metric accuracy, Semantic accuracy and Practical feasibility. These sections were split up into specific and comparable metrics stated in Table \ref{tab:metric-table} below:
 
 \renewcommand{\arraystretch}{1.5}
 \begin{table}[H]
@@ -120,7 +120,7 @@ As stated above, the evaluation criteria aimed to address 3 sections: Metric acc
 
 \subsection{Simulation}\label{sec:sim-setup}
 
-The custom dataset used for the evaluation was the office scene shown in picture \ref{fig:office}, recorded in Gazebo using a differential drive robot shown in picture \ref{fig:robot}. The robot was configured to mimic the sensors on a Reachy2(reference) robot, which represents a realistic candidate for indoor tasks due to an omnidirectional base and gripper hands. It had a velodyne 3D LiDAR sensor (for S-Graphs+) attached to the base with a RGB-D camera (Hydra and Clio) attached to the body halfway up. The camera was a simulated camera setup to emulate the Intel Realsense D435 camera due to it being popular in robotics research, recording 1280x720 image at 30Hz, with 1.5708 Field of View. The office scene was sourced from \cite{gazebo-worlds-dataset}, which was segmented to include only a portion of the environment shown in picture (slimmed office picture ref). The decision to use a portioned section of the scene was made to ensure the recording was a feasible length whilst including multiple room types and objects.
+The custom dataset used for the evaluation was the office scene shown in picture \ref{fig:office}, recorded in Gazebo using a differential drive robot shown in picture \ref{fig:robot}. The robot was configured to mimic the sensors on a Reachy2 \cite{Reachy2} robot, which represents a realistic candidate for indoor tasks due to an omnidirectional base and gripper hands. It had a velodyne 3D LiDAR sensor (for S-Graphs+) attached to the base with a RGB-D camera (Hydra and Clio) attached to the body halfway up. The camera was a simulated camera setup to emulate the Intel Realsense D435 camera due to it being popular in robotics research, recording 1280x720 image at 30Hz, with 1.5708 Field of View. The office scene was sourced from \cite{gazebo-worlds-dataset}, which was segmented to include only a portion of the environment shown in Figure \ref{fig:office}. The decision to use a portioned section of the scene was made to ensure the recording was a feasible length whilst including multiple room types and objects.
 
 Each method was deployed on the same rosbag recording, this made the evaluation fair, as it ensures they all process the same data, which allows for a direct comparsion.
 
@@ -128,7 +128,7 @@ Before testing commenced on the custom dataset, the methods were verified agains
 
 A fundamental part for deploying Clio requires a task/region list, which represents the tasks and regions it should be searching for. It was fed with Tasks: --- and Regions: ---. These were chosen to cater for all room types, as well as objects which are distinct and regular throughout the scene which would allow for detection analysis.
 
-A key deployment limitation was observed with Clio. The rosbag image data had to be downsampled and played at maximum 0.25x speed in order for frames to be processed correctly and the system not to crash. Even with this input, GPU usage was observed to spike to 98% occasionally, which suggests the bottleneck might have been to do with the hardware gap (SPECS) to (SPECS). Notably, Clio ran without issue on the example dataset at real-time playback, suggesting the limitation is a specific response to the custom dataset. This represents a real-world capability limitation, as Hydra was able to run in real-time playback with the original image size without issue.
+A key deployment limitation was observed with Clio. The rosbag image data had to be downsampled and played at maximum 0.25x speed in order for frames to be processed correctly and the system not to crash. Even with this input, GPU usage was observed to spike to 98\% occasionally, which suggests the bottleneck might have been to do with the hardware gap (SPECS) to (SPECS). Notably, Clio ran without issue on the example dataset at real-time playback, suggesting the limitation is a specific response to the custom dataset. This represents a real-world capability limitation, as Hydra was able to run in real-time playback with the original image size without issue.
 
 \begin{figure}[H]
     \centering
@@ -216,7 +216,7 @@ Hydra expects both a robot frame and odometry as TF transforms instead of raw od
 
 \subsection{Evaluation Scripts}\label{sec:sim-eval-scripts}
 
-For each of the metrics, the results were averaged over 5 runs and the Standard Deviation and Coefficient of Variation were calculated. This allows the variance of non-deterministic systems like neural networks to be measured to determine method stability.
+For each of the metrics, the results were averaged over five runs and the Standard Deviation and Coefficient of Variation were calculated. This allows the variance of non-deterministic systems like neural networks to be measured to determine method stability.
 
 A custom script was developed to extract ground truth information from the custom office gazebo world file. The extracted data included room centroids for room detection, object centroids and bounding boxes for object detection and intersection of union measurements, as well as object labels in order to evaluate semantic accuracy. 
 
