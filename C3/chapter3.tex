@@ -168,13 +168,13 @@ Each method requires different ROS environments. There was no ROS version which 
 
 S-Graphs+ was installed natively with ROS2 Humble as it was the most lightweight of the candidate methods and didn’t require any major dependencies like CUDA. To ensure a smooth installation and integration to a custom dataset, the instructions from \cite{sgraphs-install} were followed.
 
-Hydra was ran through a Docker container with ROS2 Jazzy sourced from the official Hydra-ROS github \cite{hydra-ros-docker}. This setup allowed smooth running in parallel with S-Graphs+ as it removes ROS version conflicts. The Docker also allowed smooth operation due to the pre-installed dependencies for things such as CUDA and TensorRT, avoiding manual dependency configuration.
+Hydra was run through a Docker container with ROS2 Jazzy sourced from the official Hydra-ROS github \cite{hydra-ros-docker}. This setup allowed smooth running in parallel with S-Graphs+ as it removes ROS version conflicts. The Docker also allowed smooth operation due to the pre-installed dependencies for things such as CUDA and TensorRT, avoiding manual dependency configuration.
 
 The original deployment system was a personal laptop with AMD Ryzen 5000 Series with AMD Radeon Graphics, a problem arose when deploying Hydra where only coordinate frames were updating, with no graph being built. This was identified for a lack of NVIDIA graphics to run TensorRT and CUDA. Once identified, deployment was moved to a HCCR lab computer which had more computing power (see Table \ref{tab:hardware_specs} for full details).
 
 Clio was deployed using a ROS Noetic Docker sourced from \cite{cliodocker}. The decision to use a Docker was more important for this method due to the fact it needs ROS1 instead of ROS2. Whilst trying to build the workspace, an issue was identified which caused build failures. It was caused due to Clio being a ROS1 system, when some core dependencies had switched their default branches to ROS2, causing incompatibility failures. This was a known problem discussed in a community forum, which led to the discovery of a community-built container which explicitly uses the old ROS1 version of dependencies.
 
-The setup of one native and two Dockerised methods enabled smooth transition between running each method, by only changing the active environment rather than reinstalling ROS versions. This made the deployment process more practical given the time constraints of the project.
+The setup of one native and two Dockerised methods enabled smooth transition between running each method,. By only changing the active environment rather than reinstalling ROS versions, this allowed each method to run under intended conditions. This made the deployment process more practical given the time constraints of the project.
 
 \subsection{Robot Configuration and Data Recording}\label{sec:sim-robot-config}
 
@@ -210,11 +210,23 @@ PointCloud2 data is used by S-Graphs+ while the image data is used by Hydra and 
 
 \subsection{Real-World Data Pipeline}\label{sec:real-data-pipeline}
 
+To record the HCCR lab for real-world data deployment, a handheld ZED camera powered by a NVIDIA Jetson AGX Orin was used. This recording method was chosen due to its portability and ease of setup. The recording was then parsed into RGB and Depth frames with pose estimates (using code provided by PhD Student Emin Safa Tok). The frames were then converted into a rosbag using a custom script, which takes the data and sequentially writes them as rosbag topics . This rosbag could then be processed by the best-performing method (Hydra, as discussed in \ref{sec:res:best-method}).
+
+Hydra expects both a robot frame and odometry as TF transforms instead of raw odometry poses. Since the real-world data was recorded using a ZED camera, it does not have a defined robot frame. This meant that during deployment, a static transform had to be published to define this frame. As well as this, a custom node had to be run to republish the odometry data as TF transforms.
+
 \subsection{Evaluation Scripts}\label{sec:sim-eval-scripts}
 
-%\lipsum[21-22]
+For each of the metrics, the results were averaged over 5 runs and the Standard Deviation and Coefficient of Variation were calculated. This allows the variance of non-deterministic systems like neural networks to be measured to determine method stability.
 
-\section{Summary}\label{sec:summary}
-% Optional: short summary of the methodology. Omit if the chapter is already concise.
+A custom script was developed to extract ground truth information from the custom office gazebo world file. The extracted data included room centroids for room detection, object centroids and bounding boxes for object detection and intersection of union measurements, as well as object labels in order to evaluate semantic accuracy. 
+
+Due to gazebo objects having more specific names such as ‘office\_chair\_1’, these names are normalised to the most accurate corresponding label in Hydra’s label space. For example, computer to Appliance, and wastebasket to Storage. This meant that detected and ground truth objects had the same contextual labels so the confusion matrix is accurate. Label renaming was based on substring checking for regular names, for example all labels with chair in the name was renamed to just ‘Chair’. This technique meant that the meaning of the labels was maintained.
+
+For room detection, it is unrealistic to only accept exact centroids as true positives. Therefore, in the room detection logic, a true positive is classed as within 4m of a ground truth centroid. This threshold was chosen by taking into account the sizes of the rooms in the scene. Once a true positive is found, the ground truth room is removed from future checks. This stops multiple room nodes, like Clio’s room shattering discussed in section \ref{sec:disc-room-seg}, from getting rewarded for over-segmentation. As well as this, the Z component of room centroid coordinates are ignored, this is because the custom office scene is a single-floor, therefore Z between centroids is negligible and can needlessly inflate the distance measurement.
+
+The same logic from above is applied to object detection, however the threshold is lowered to within 1m of a ground truth centroid. This is because objects are on a smaller scale than rooms, therefore a smaller error is more meaningful in object terms. The same one object per ground truth is applied to objects to avoid multiple detections.
+
+For IoU measurements, the closest ground truth object by centroid distance is found, then the IoU is calculated between the bounding boxes. This logic follows the assumption that the closest centroid is meant to be the same object. This saves time as calculating the IoU between each object and ground truth object would be computationally expensive.
+%\lipsum[21-22]
 
 %\lipsum[23-24]

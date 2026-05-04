@@ -17,9 +17,23 @@ This chapter concludes the dissertation. Summarise the aims, main results, and w
 \section{Conclusions}\label{sec:conclusions}
 % Summary of aims, key results, and main takeaways. Optional: list of contributions.
 
+The objective of this project was to identify which candidate 3D scene graph method is most suitable for assisting with architectural tasks, such as inventorying or remote building visualisation. Accurate metric data and semantic understanding is important for executing higher-level tasks as the robot needs to know more than what is geometrically around it.
+
+The project consisted of implementing three individual environments capable of deploying the candidate methods justified in \ref{sec:methods}, which consisted of one native and two Docker environments. Each method was then deployed on a custom office dataset, recorded using a differential drive robot with a 3D LiDAR and fixed camera. The results would then allow a complete evaluation of metric and semantic accuracy as well as practicality (detailed metrics outlined in \ref{sec:eval-framework}). These metrics were designed to reveal which method was the most deployment-ready for assisting in architectural tasks.
+
+After analysing the results, it was determined in section \ref{sec:res:best-method} that Hydra was the best-performing method for the architectural industry. This was due to its accuracy and efficiency under hardware constraints, which is likely to be a factor outside of academic institutions.
+
+In comparison, S-Graphs+ was marginally superior at room segmentation, however lacks semantic understanding of the scene. Clio demonstrated strong metric-semantic room segmentation, however it was found to really struggle to instantiate object primitives, likely due to the lack of object frame captures provided by the differential drive and fixed camera used for the dataset. This was contrasted with Hydra which adapted comfortably to the perspective change. As well as this, despite expected behaviour on its example dataset, Clio had to be processed at 0.25 playback speed on the custom office dataset to prevent missing frames or crashing, meaning it was labelled incapable of real-time usage. This nullified Clio as a suitable candidate as it failed one of the mandatory requirements set out in \ref{sec:spec:mandatory}.
+
+There were limitations to this evaluation. Most notably a single environment prevented comparisons over different deployment contexts such as office vs hospital. Another key limitation identified was the data collection method, which limited the coverage and views of objects, likely resulting in the Clio bottleneck observed in section \ref{sec:disc-clio-rec}.
+
 %\lipsum[37-38]
 
 \section{Future work}\label{sec:future}
 % Next steps, open questions, and what you would do with more time or resources.
+
+A limitation of this work was an evaluation over one scene context (an office). For a deeper evaluation over different use-cases, the methods could be evaluated over multiple scenes. For example, a warehouse would allow evaluation of detecting different types of boxes, and a hospital scene could demonstrate a humanly dense environment with dynamic parts such as bed curtains etc.
+
+Another key limitation identified was the data collection method. The scene was recorded using a differential drive robot with a fixed camera, which provides a realistic insight into the methods likely available in the architecture world. However, a dataset recorded with a more dynamic robot such as a Reachy2 \cite{Reachy2}, which supports omnidirectional travel as well as a rotatable camera, would allow a larger coverage of the scene and objects which would give the methods more data resulting in more accurate representations.
 
 %\lipsum[39-40]
