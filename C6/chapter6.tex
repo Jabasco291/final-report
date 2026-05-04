@@ -14,17 +14,61 @@
 
 This chapter reflects on what was learned from the project: how assumptions and decisions were re-evaluated and what would be done differently in future.
 
-\section{Critical narrative of the experience}\label{sec:challenges}
+\section{Critical narrative of the experience}\label{sec:ref:challenges}
 % Key challenges, turning points, and how they affected your understanding.
+
+\subsection{Hardware Research}\label{sec:ref:hardware-research}
+
+A key issue during the deployment process was a hardware mismatch when running Hydra. At first, my plan was to deploy the methods on my personal laptop containing a AMD Ryzen 7 5000 Series with AMD Radeon Graphics, this was due to portability and accessibility of a personal laptop compared to a lab desktop. 
+
+I originally deployed each method sequentially: S-Graphs+, Hydra then Clio. Due to S-Graphs+ not needing and specialist hardware, it deployed without issue on my personal laptop. However, when deploying Hydra initially, it would only output the updating frames without constructing or building a graph. 
+
+The cause was identified as a hardware mismatch, as Hydra requires a system capable of running Nvidia TensorRT in order to process frames correctly. This led me to moving to the HCCR lab computer with specs outlined in Table \ref{tab:hardware_specs}, which satisfied this requirement. 
+
+This experience taught me to properly research the ideal hardware specifications before starting deployment.
+
+\subsection{Environment Isolation}\label{sec:ref:environment-isolation}
+
+Another issue was encountered when trying to run all methods on a native environment. S-Graphs+ was originally deployed on ROS2 Humble. As outlined in the Hydra-ROS github \cite{hydra-ros-repo}, Hydra has only been tested on ROS2 Iron and ROS2 Jazzy. 
+
+Due to S-Graphs+ being reported working for ROS2 Iron also, the environment was switched to cater for Hydra compatibility. This caused some issues during integration which created a complex and messy native environment. 
+
+This became more complex later due to Clio still using ROS1 Noetic. After the decision to move to the HCCR lab computer, Dockers were used from the start when deploying Hydra and Clio which made the transition between deploying the methods easier. 
+
+This journey taught me the importance of individual deployment environments when running complex systems.
+
+\subsection{Community Insights}\label{sec:ref:community-insights}
+
+During initial Clio deployment, I used a ROS1 Noetic container which I installed from \cite{shakeri2023docker}. A problem was encountered during Clio installation which kept preventing the catkin build for the Clio workspace. 
+
+This problem was found to be a known issue on a community forum which identified the problem being Clio using ROS1, where many of the main branches of the dependencies had upgraded to ROS2, which caused integration problems. 
+
+A user on the community forum had created and published a Docker container which points directly to the deprecated ROS1 versions for dependencies. This community solution saved the extra work that would be needed to solve each dependency in a new container. This taught me the value of community solutions.
+
+
 
 %\lipsum[41-42]
 
 \section{Analysis and application}\label{sec:reflection}
 % How you analysed the experience and applied learning to decisions or concepts.
 
+\subsection{Hardware Research}\label{sec:ref:hardware-research-analysis}
+
+This issue has taught me that time should be taken into researching the hardware requirements before the deployment stage begins. I applied this lesson almost immediately as I identified that Clio requires the same TensorRT capability as Hydra. Therefore, in addition to maintaining a fair test with the same hardware, I knew to not even try to deploy it on my personal laptop first, but begin on the lab computer.
+
+\subsection{Environment Isolation}\label{sec:ref:environment-isolation-analysis}
+
+I began this project assuming that different versions of the same system, for example ROS2 releases, often didn’t matter in terms of deployment. However this experience changed this assumption and has taught me that, especially with state-of-the-art systems, even the smallest dependency can cause cascading failures. Like with the hardware, I applied this lesson directly into my Clio deployment by beginning by building a ROS Noetic container to run Clio independently.
+
+\subsection{Community Insights}\label{sec:ref:community-insights-analysis}
+
+This experience taught me the importance of community-driven solutions. As my research led me to valuable resources which saved me considerable time in view of the time constraints of the project. This has highlighted the importance of the open-source community in efficient development processes.
+
 %\lipsum[43-44]
 
 \section{Implications for future practice}\label{sec:implications}
 % What you will take forward: habits, assumptions, or approaches in future work.
+
+In the future, I will prioritise creating individual running environments using Docker containers and virtual environments, as this gives me control and stability within systems. As well as this, I will be more mindful of hardware requirements by not prioritising ease-of-use over productivity. I will also incorporate research into community solutions into my development pipelines to ensure I am using my time efficiently by not repeating mistakes someone has already addressed.
 
 %\lipsum[45-46]
