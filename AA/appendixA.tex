@@ -10,16 +10,18 @@
 % \section as in main chapters. Replace with your own supplementary material.
 % =============================================================================
 
-This appendix contains supplementary material: extra tables, derivations, or notation. Replace with your own content.
+This appendix contains supplementary material like tables containing raw data
 
 \section{Additional tables}\label{app:tables}
 
 %TIMING TABLES
 
+\subsection{Timings}\label{app:timings}
+
 \begin{table}[H]
 \centering
 \caption{Hydra Raw Execution Timings}
-\label{tab:hydra_raw}
+\label{tab:timings:hydra_raw}
 \begin{tabular}{ccccccc}
 \toprule
 \textbf{Run} & \textbf{f\_mean} & \textbf{f\_max} & \textbf{b\_mean} & \textbf{b\_max} & \textbf{total\_mean} & \textbf{total\_max} \\
@@ -36,7 +38,7 @@ This appendix contains supplementary material: extra tables, derivations, or not
 \begin{table}[H]
 \centering
 \caption{S-Graphs+ Raw Execution Timings (Backend)}
-\label{tab:sgraphs_raw}
+\label{tab:timings:sgraphs_raw}
 \begin{tabular}{ccccc}
 \toprule
 \textbf{Run} & \textbf{mean} & \textbf{min} & \textbf{max} & \textbf{std-dev} \\
@@ -50,10 +52,14 @@ This appendix contains supplementary material: extra tables, derivations, or not
 \end{tabular}
 \end{table}
 
+%Drift Tables
+
+\subsection{Drift}\label{app:drift}
+
 \begin{table}[H]
 \centering
-\caption{Hydra Raw Object Spatial Accuracy Statistics}
-\label{tab:hydra_raw_spatial}
+\caption{Hydra Raw Object Spatial Statistics}
+\label{tab:spatial:hydra_raw_spatial}
 \begin{tabular}{lcccc}
 \toprule
 \textbf{Run} & \textbf{Mean Drift (m)} & \textbf{Max Drift (m)} & \textbf{MED (m)} & \textbf{IoU} \\
@@ -71,8 +77,8 @@ Run 5 & 0.16 & 6.69 & 0.74 & 0.23 \\
 
 \begin{table}[H]
 \centering
-\caption{Clio Raw Spatial Accuracy Statistics}
-\label{tab:clio_raw_spatial}
+\caption{Clio Raw Object Spatial Statistics}
+\label{tab:spatial:clio_raw_spatial}
 \begin{tabular}{lcccc}
 \toprule
 \textbf{Run} & \textbf{Mean Drift (m)} & \textbf{Max Drift (m)} & \textbf{MED (m)} & \textbf{IoU} \\
@@ -88,10 +94,14 @@ Run 5 & 2.18 & 9.22 & 2.63 & 0.00 \\
 \end{tabular}
 \end{table}
 
+%label tables
+
+\subsection{Semantics}\label{app:semantics}
+
 \begin{table}[H]
 \centering
 \caption{Hydra Raw Label Distribution Statistics}
-\label{tab:appendix_hydra_labels}
+\label{tab:app:semantics:hydra_labels}
 \begin{tabular}{lccc}
 \toprule
 \textbf{Label Class} & \textbf{Mean Count} & \textbf{Std Dev} & \textbf{CV} \\
@@ -116,7 +126,7 @@ Couch (14)           & 0.40  & 0.55 & 1.38 \\
 \begin{table}[H]
 \centering
 \caption{Appendix: Clio Label Distribution Statistics}
-\label{tab:appendix_clio_labels}
+\label{tab:app:semantics:clio_labels}
 \begin{tabular}{lccc}
 \toprule
 \textbf{Label Class} & \textbf{Mean Count} & \textbf{Std Dev} & \textbf{CV} \\
@@ -130,18 +140,18 @@ Unknown (4294967295) & 2.20 & 0.45 & 0.20 \\
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{figures/confusion_matrix_mean_raw.png}
+    \includegraphics[width=0.9\textwidth]{figures/confusion_matrix_mean_raw.png}
     \caption{Mean Count Confusion Matrix of Hydra Labels vs Ground Truth Labels}
-    \label{fig:cmatrixappendix}
+    \label{fig:app:semantics:hydra_cmatrix}
 \end{figure}
 
 
 %\lipsum[47-48]
 
-\section{Further analysis}\label{app:analysis}
+% \section{Further analysis}\label{app:analysis}
 
 %\lipsum[49-50]
 
-\section{Derivation}\label{app:derivation}
+% \section{Derivation}\label{app:derivation}
 
 %\lipsum[51-52]

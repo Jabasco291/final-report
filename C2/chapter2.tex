@@ -11,7 +11,7 @@
 % Assume a competent reader; avoid lengthy descriptions of standard tools.
 % =============================================================================
 
-This chapter provides the background needed to understand the project: the wider context, existing solutions or related work, and a clear problem statement (and research question(s) where applicable). Replace with your own review.
+This chapter provides context behind the project domain, a high-level comparsion of the candidate methods, and the high-level theory and differences between each method. It ends with a clear problem statement which the project aims to address.
 
 %\lipsum[1-2]
 
@@ -59,6 +59,12 @@ Layer Descriptions:
 \section{Related work}\label{sec:related}
 % Prior solutions, methods, or systems; identify gaps your work addresses.
 % Optional subsections: by theme, chronology, or type (e.g.\@ systems, methods, theory).
+
+Topologic \cite{topologic} is a software toolkit which integrates several architecturally relevant topological concepts to create hierarchical and topological information-rich 3D representations to aid in the design process. Its goal is to support the creation of the lightest, most understandable models of architectural topology. The method addresses a limitation of conventional \gls{bim} applications (not explicitly modelling the enclosure of space) by using formal topology to represent spatial and material partitions.
+
+However, this system is limited by its requirement for clean geometry input in order to process the data. It relies on a CellComplex, a structure where every spatial cell is perfectly enclosed and shares boundaries with its neighbours. It is rare for real-world sensors like 3D LiDAR and RGB-D cameras to capture data this complete, as it usually results in unstructured noisy data, which naturally creates the need for extra steps between data collection and topological analysis.
+
+\gls{dsg}s bridge this gap by automating the transition from data collection and topological representation. \gls{dsg}s use room segmentation and semantic partitioning techniques to automate transforming raw data into a hierarchical view with semantic understanding which is useful for architectural tasks like inventorying or remote building visualisation.
 
 \section{Theory of Methods}\label{sec:theory}
 

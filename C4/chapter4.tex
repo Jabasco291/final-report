@@ -171,12 +171,12 @@ Clio  & 2.20 & 0.45 & 0.20 \\
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{figures/confusion_matrix_mean_norm.png}
+    \includegraphics[width=0.9\textwidth]{figures/confusion_matrix_mean_norm.png}
     \caption{Hydra vs Ground Truth  Semantic Labels: Normalised Confusion Matrix}
     \label{fig:cmatrix}
 \end{figure}
 
-The confusion matrix shown in figure \ref{fig:cmatrix} outlines a contrasts in performances throughout Hydra’s semantic labelling pipeline. It identifies 95\% of the chairs from the ground truth correctly, showing it has the potential for accurate semantics. However, it labelled 67\% of ground truth “Appliances” as “Things”. This is likely due to a vocabulary mismatch between the label space and ground truth objects within the scene, as it doesn’t have labels computers or monitors which are in excess.
+The confusion matrix shown in figure \ref{fig:cmatrix} outlines a contrasts in performance throughout Hydra’s semantic labelling pipeline. It identifies 95\% of the chairs from the ground truth correctly, showing it has the potential for accurate semantics. However, it labelled 67\% of ground truth “Appliances” as “Things”. This is likely due to a vocabulary mismatch between the label space and ground truth objects within the scene, as it doesn’t have labels computers or monitors which are in excess.
 
 Hydra seemed to struggle with geometric objects like tables and storage containers. With the model often identifying Structures, storage and appliances as tables. This inaccuracy is likely due to the similarity between geometric shapes of flat sides like tables and storage containers.
 
