@@ -31,7 +31,7 @@ This project presents a comparative evaluation across three state-of-the-art can
 
 The methods were evaluated over five executions on a controlled and consistent simulation environment. This highest-performing method was determined through evaluation of three main categories: Metric accuracy, Semantic accuracy and Practical feasibility. This chosen system was then deployed on real-world sensor data of the \gls{hccr} laboratory.
 
-Each method was deployed on the same simulated environment. The sensor data was recorded in a single rosbag using a RGB-D camera (Hydra and Clio) and 3D LiDAR sensor (S-Graphs+) which were attached to a differential drive robot and teleoperated around the scene. The methods resulted in a 3D scene graph, which was then saved in JSON format for further statistical evaluation. 
+Each method was deployed on the same simulated environment. The sensor data was recorded in a single rosbag using a \acrshort{rgbd} camera (Hydra and Clio) and 3D \acrshort{lidar} sensor (S-Graphs+) which were attached to a differential drive robot and teleoperated around the scene. The methods resulted in a 3D scene graph, which was then saved in JSON format for further statistical evaluation. 
 Simulation results were evaluated quantitatively to determine the highest-performing statistically, then the real-world results were evaluated qualitatively. This is because ground-truth is accessible for simulation environments like Gazebo, however generating ground-truth can be complicated for real-world data.
 
 %\lipsum[11-12]
@@ -39,14 +39,14 @@ Simulation results were evaluated quantitatively to determine the highest-perfor
 \section{Specification}\label{sec:specification}
 % what should they need to do (what requirements assessing)
 
-To evaluate the suitability of the candidate methods for architectural tasks, requirements are categorised into Mandatory and Desirable requirements. These define the fundamental capabilities for SLAM operations and the ideal capabilities for higher-level architectural tasks such as inventorying.
+To evaluate the suitability of the candidate methods for architectural tasks, requirements are categorised into Mandatory and Desirable requirements. These define the fundamental capabilities for \gls{slam} operations and the ideal capabilities for higher-level architectural tasks such as inventorying.
 
 \subsection{Mandatory Requirements}\label{sec:spec:mandatory}
 
 \begin{itemize}
     \item \textbf{Hierarchical Scene Representation:} The method must generate a 3D scene graph with multiple abstraction layers to provide architectural context.
     \item \textbf{Spatial Segmentation:} The method must be able to segment environments into distinct room nodes.
-    \item \textbf{ROS Compatibility:} The method must be compatible with ROS (Robot Operating System) input data for processing simulation data.
+    \item \textbf{ROS Compatibility:} The method must be compatible with \gls{ros} input data for processing simulation data.
     \item \textbf{Operational Stability:} The method must be able to process a five-minute office scene without fatal errors.
     \item \textbf{Quantitative Evaluation:} The evaluation framework must calculate Recall, Precision, and F1-score for room nodes and object nodes where applicable.
 \end{itemize}
@@ -63,9 +63,9 @@ To evaluate the suitability of the candidate methods for architectural tasks, re
 
 The three candidate methods are S-Graphs+\cite{s_graphs_plus}, Hydra\cite{hydra} and Clio\cite{clio}. Below is a brief explanation of their main characteristics and why they were chosen for the evaluation.
 
-S-Graphs+ takes 3D LiDAR point cloud as input. It then analyses the point cloud to identify geometric planes, which are then used to detect rooms. The hierarchical structure consists of Keyframes, Walls, Rooms, Floors. There is no object segmentation or semantic labelling, its output mostly contains navigation and structural information. This method was selected to observe how its purely geometric structure would compare to methods which also incorporate semantics.
+S-Graphs+ takes 3D \acrshort{lidar} point cloud as input. It then analyses the point cloud to identify geometric planes, which are then used to detect rooms. The hierarchical structure consists of Keyframes, Walls, Rooms, Floors. There is no object segmentation or semantic labelling, its output mostly contains navigation and structural information. This method was selected to observe how its purely geometric structure would compare to methods which also incorporate semantics.
 
-Hydra adopts a spatial approach using RGB-D data to reconstruct a 3D metric-semantic mesh of the scene. It uses a \gls{gvd} to represent a free-space graph to represent navigable spaces. This graph is then dilated to expose connectors such as doorways which allows clusters of nodes to be segmented into rooms. Hydra differs from S-Graphs+ by including an object layer, as well as using a neural network to assign semantic labels throughout the graph. This method was included to evaluate the spatial approach compared to geometric and task-driven approaches.
+Hydra adopts a spatial approach using \acrshort{rgbd} data to reconstruct a 3D metric-semantic mesh of the scene. It uses a \gls{gvd} to represent a free-space graph to represent navigable spaces. This graph is then dilated to expose connectors such as doorways which allows clusters of nodes to be segmented into rooms. Hydra differs from S-Graphs+ by including an object layer, as well as using a neural network to assign semantic labels throughout the graph. This method was included to evaluate the spatial approach compared to geometric and task-driven approaches.
 
 Clio takes a different approach to the other candidate methods. Instead of being task-agnostic, meaning it captures everything about the scene, Clio adopts a task-driven methodology. It takes a set of tasks and regions in natural language as input, then segments the scene into task-relevant objects. Clio’s semantics are open-set compared to Hydra’s closed-set semantics, meaning it doesn’t have a fixed set of possible semantic labels to choose from, instead they are decided upon depending on the tasks required. To identify regions (rooms), Clio groups semantic objects into regions rather than using geometric boundaries like the other 2 candidates. For example, a kettle and cooker are grouped into a kitchen. This method was chosen to evaluate how task-driven approaches compare to task-agnostic methods.
 
@@ -94,8 +94,8 @@ As stated above, the evaluation criteria aimed to address three sections: Metric
     \multirow{4}{*}{\textbf{Objects}}
         & Recall, Precision, F1          & Measures completeness \& accuracy of object detection \\
         & Per Run Object Drift               & Measures object localisation consistency \\
-        & Centroid mED                   & Measures spatial accuracy of object localisation \\
-        & IoU Bounding Box Overlap       & Measures spatial accuracy of detected bounding boxes \\
+        & Centroid \gls{med}                   & Measures spatial accuracy of object localisation \\
+        & \gls{iou} Bounding Box Overlap       & Measures spatial accuracy of detected bounding boxes \\
     \midrule
     \multirow{2}{*}{\textbf{Semantic Accuracy}}
         & Object Confusion Matrix        & Assesses per-class labelling accuracy and consistency \\
@@ -120,7 +120,7 @@ As stated above, the evaluation criteria aimed to address three sections: Metric
 
 \subsection{Simulation}\label{sec:sim-setup}
 
-The custom dataset used for the evaluation was the office scene shown in picture \ref{fig:office}, recorded in Gazebo using a differential drive robot shown in picture \ref{fig:robot}. The robot was configured to mimic the sensors on a Reachy2 \cite{Reachy2} robot, which represents a realistic candidate for indoor tasks due to an omnidirectional base and gripper hands. It had a velodyne 3D LiDAR sensor (for S-Graphs+) attached to the base with a RGB-D camera (Hydra and Clio) attached to the body halfway up. The camera was a simulated camera setup to emulate the Intel Realsense D435 camera due to it being popular in robotics research, recording 1280x720 image at 30Hz, with 1.5708 Field of View. The office scene was sourced from \cite{gazebo-worlds-dataset}, which was segmented to include only a portion of the environment shown in Figure \ref{fig:office}. The decision to use a portioned section of the scene was made to ensure the recording was a feasible length whilst including multiple room types and objects.
+The custom dataset used for the evaluation was the office scene shown in Figure \ref{fig:office}, recorded in Gazebo using a differential drive robot shown in Figure \ref{fig:robot}. The robot was configured to mimic the sensors on a Reachy2 \cite{Reachy2} robot, which represents a realistic candidate for indoor tasks due to an omnidirectional base and gripper hands. It had a velodyne 3D \acrshort{lidar} sensor (for S-Graphs+) attached to the base with a \acrshort{rgbd} camera (Hydra and Clio) attached to the body halfway up. The camera was a simulated camera setup to emulate the Intel Realsense D435 camera due to it being popular in robotics research, recording 1280x720 image at 30Hz, with 1.5708 Field of View. The office scene was sourced from \cite{gazebo-worlds-dataset}, which was segmented to include only a portion of the environment shown in Figure \ref{fig:office}. The decision to use a portioned section of the scene was made to ensure the recording was a feasible length whilst including multiple room types and objects.
 
 Each method was deployed on the same rosbag recording, this made the evaluation fair, as it ensures they all process the same data, which allows for a direct comparsion.
 
@@ -151,11 +151,11 @@ A key deployment limitation was observed with Clio. The rosbag image data had to
 
 \subsection{Real-World}\label{sec:real-setup}
 
-The simulation phase concluded that Hydra was the best-performing method as an all round system (discussed in Section \ref{sec:res:best-method}). Therefore, this meant 3D LiDAR data wasn’t required for the real-world deployment due to S-Graphs+ being excluded from this stage.
+The simulation phase concluded that Hydra was the best-performing method as an all round system (discussed in Section \ref{sec:res:best-method}). Therefore, this meant 3D \acrshort{lidar} data wasn’t required for the real-world deployment due to S-Graphs+ being excluded from this stage.
 
-The ZED camera was the optimal choice for recording the scene due to its simple setup and RGB-D capabilities alongside pose estimates, it was set to record 720p quality at 30Hz, which enabled sufficient quality and coverage. To mimic the perspective of a traversal robot like Reachy2, The camera was handheld at torso height (approx. 1.2m) whilst being walked slowly around the HCCR lab.
+The ZED camera was the optimal choice for recording the scene due to its simple setup and \acrshort{rgbd} capabilities alongside pose estimates, it was set to record 720p quality at 30Hz, which enabled sufficient quality and coverage. To mimic the perspective of a traversal robot like Reachy2, The camera was handheld at torso height (approx. 1.2m) whilst being walked slowly around the HCCR lab.
 
-As the ZED camera naturally lacks ROS message outputs, the svo2 formatted video was extracted into RGB and Depth frames along with pose history of the robot. This data was then encoded into a ROS2 bag recording which can be processed by Hydra.
+As the ZED camera naturally lacks ROS message outputs, the svo2 formatted video was extracted into \acrshort{rgb} and Depth frames along with pose history of the robot. This data was then encoded into a \acrshort{ros}2 bag recording which can be processed by Hydra.
 
 %\lipsum[19-20]
 
@@ -164,17 +164,17 @@ As the ZED camera naturally lacks ROS message outputs, the svo2 formatted video 
 
 \subsection{Simulation Environment Setup}\label{sec:sim-env-setup}
 
-Each method requires different ROS environments. There was no ROS version which was supported by all three methods simultaneously. To ensure a smooth deployment of all three methods, Docker was used to help maintain three separate environments.
+Each method requires different \acrshort{ros} environments. There was no \acrshort{ros} version which was supported by all three methods simultaneously. To ensure a smooth deployment of all three methods, Docker was used to help maintain three separate environments.
 
-S-Graphs+ was installed natively with ROS2 Humble as it was the most lightweight of the candidate methods and didn’t require any major dependencies like CUDA. To ensure a smooth installation and integration to a custom dataset, the instructions from \cite{sgraphs-install} were followed.
+S-Graphs+ was installed natively with \acrshort{ros}2 Humble as it was the most lightweight of the candidate methods and didn’t require any major dependencies like CUDA. To ensure a smooth installation and integration to a custom dataset, the instructions from \cite{sgraphs-install} were followed.
 
-Hydra was run through a Docker container with ROS2 Jazzy sourced from the official Hydra-ROS github \cite{hydra-ros-docker}. This setup allowed smooth running in parallel with S-Graphs+ as it removes ROS version conflicts. The Docker also allowed smooth operation due to the pre-installed dependencies for things such as CUDA and TensorRT, avoiding manual dependency configuration.
+Hydra was run through a Docker container with \acrshort{ros}2 Jazzy sourced from the official Hydra-ROS github \cite{hydra-ros-docker}. This setup allowed smooth running in parallel with S-Graphs+ as it removes \acrshort{ros} version conflicts. The Docker also allowed smooth operation due to the pre-installed dependencies for things such as CUDA and TensorRT, avoiding manual dependency configuration.
 
-The original deployment system was a personal laptop with AMD Ryzen 5000 Series with AMD Radeon Graphics, a problem arose when deploying Hydra where only coordinate frames were updating, with no graph being built. This was identified for a lack of NVIDIA graphics to run TensorRT and CUDA. Once identified, deployment was moved to a HCCR lab computer which had more computing power (see Table \ref{tab:hardware_specs} for full details).
+The original deployment system was a personal laptop with AMD Ryzen 5000 Series with AMD Radeon Graphics, a problem arose when deploying Hydra where only coordinate frames were updating, with no graph being built. This was identified for a lack of NVIDIA graphics to run TensorRT and CUDA. Once identified, deployment was moved to a \gls{hccr} lab computer which had more computing power (see Table \ref{tab:hardware_specs} for full details).
 
-Clio was deployed using a ROS Noetic Docker sourced from \cite{cliodocker}. The decision to use a Docker was more important for this method due to the fact it needs ROS1 instead of ROS2. Whilst trying to build the workspace, an issue was identified which caused build failures. It was caused due to Clio being a ROS1 system, when some core dependencies had switched their default branches to ROS2, causing incompatibility failures. This was a known problem discussed in a community forum, which led to the discovery of a community-built container which explicitly uses the old ROS1 version of dependencies.
+Clio was deployed using a \acrshort{ros} Noetic Docker sourced from \cite{cliodocker}. The decision to use a Docker was more important for this method due to the fact it needs \acrshort{ros}1 instead of \acrshort{ros}2. Whilst trying to build the workspace, an issue was identified which caused build failures. It was caused due to Clio being a \acrshort{ros}1 system, when some core dependencies had switched their default branches to \acrshort{ros}2, causing incompatibility failures. This was a known problem discussed in a community forum, which led to the discovery of a community-built container which explicitly uses the old \acrshort{ros}1 version of dependencies.
 
-The setup of one native and two Dockerised methods enabled smooth transition between running each method,. By only changing the active environment rather than reinstalling ROS versions, this allowed each method to run under intended conditions. This made the deployment process more practical given the time constraints of the project.
+The setup of one native and two Dockerised methods enabled smooth transition between running each method,. By only changing the active environment rather than reinstalling \acrshort{ros} versions, this allowed each method to run under intended conditions. This made the deployment process more practical given the time constraints of the project.
 
 \subsection{Robot Configuration and Data Recording}\label{sec:sim-robot-config}
 
@@ -210,7 +210,7 @@ PointCloud2 data is used by S-Graphs+ while the image data is used by Hydra and 
 
 \subsection{Real-World Data Pipeline}\label{sec:real-data-pipeline}
 
-To record the HCCR lab for real-world data deployment, a handheld ZED camera powered by a NVIDIA Jetson AGX Orin was used. This recording method was chosen due to its portability and ease of setup. The recording was then parsed into RGB and Depth frames with pose estimates (using code provided by PhD Student Emin Safa Tok). The frames were then converted into a rosbag using a custom script, which takes the data and sequentially writes them as rosbag topics . This rosbag could then be processed by the best-performing method (Hydra, as discussed in \ref{sec:res:best-method}).
+To record the HCCR lab for real-world data deployment, a handheld ZED camera powered by a NVIDIA Jetson AGX Orin was used. This recording method was chosen due to its portability and ease of setup. The recording was then parsed into RGB and Depth frames with pose estimates (using code provided by PhD Student Emin Safa Tok). The frames were then converted into a rosbag using a custom script, which takes the data and sequentially writes them as rosbag topics . This rosbag could then be processed by the best-performing method (Hydra, as discussed in Section \ref{sec:res:best-method}).
 
 Hydra expects both a robot frame and odometry as TF transforms instead of raw odometry poses. Since the real-world data was recorded using a ZED camera, it does not have a defined robot frame. This meant that during deployment, a static transform had to be published to define this frame. As well as this, a custom node had to be run to republish the odometry data as TF transforms.
 
@@ -222,11 +222,11 @@ A custom script was developed to extract ground truth information from the custo
 
 Due to gazebo objects having more specific names such as ‘office\_chair\_1’, these names are normalised to the most accurate corresponding label in Hydra’s label space. For example, computer to Appliance, and wastebasket to Storage. This meant that detected and ground truth objects had the same contextual labels so the confusion matrix is accurate. Label renaming was based on substring checking for regular names, for example all labels with chair in the name was renamed to just ‘Chair’. This technique meant that the meaning of the labels was maintained.
 
-For room detection, it is unrealistic to only accept exact centroids as true positives. Therefore, in the room detection logic, a true positive is classed as within 4m of a ground truth centroid. This threshold was chosen by taking into account the sizes of the rooms in the scene. Once a true positive is found, the ground truth room is removed from future checks. This stops multiple room nodes, like Clio’s room shattering discussed in section \ref{sec:disc-room-seg}, from getting rewarded for over-segmentation. As well as this, the Z component of room centroid coordinates are ignored, this is because the custom office scene is a single-floor, therefore Z between centroids is negligible and can needlessly inflate the distance measurement.
+For room detection, it is unrealistic to only accept exact centroids as true positives. Therefore, in the room detection logic, a true positive is classed as within 4m of a ground truth centroid. This threshold was chosen by taking into account the sizes of the rooms in the scene. Once a true positive is found, the ground truth room is removed from future checks. This stops multiple room nodes, like Clio’s room shattering discussed in Section \ref{sec:disc-room-seg}, from getting rewarded for over-segmentation. As well as this, the Z component of room centroid coordinates are ignored, this is because the custom office scene is a single-floor, therefore Z between centroids is negligible and can needlessly inflate the distance measurement.
 
 The same logic from above is applied to object detection, however the threshold is lowered to within 1m of a ground truth centroid. This is because objects are on a smaller scale than rooms, therefore a smaller error is more meaningful in object terms. The same one object per ground truth is applied to objects to avoid multiple detections.
 
-For IoU measurements, the closest ground truth object by centroid distance is found, then the IoU is calculated between the bounding boxes. This logic follows the assumption that the closest centroid is meant to be the same object. This saves time as calculating the IoU between each object and ground truth object would be computationally expensive.
+For \gls{iou} measurements, the closest ground truth object by centroid distance is found, then the \gls{iou} is calculated between the bounding boxes. This logic follows the assumption that the closest centroid is meant to be the same object. This saves time as calculating the \gls{iou} between each object and ground truth object would be computationally expensive.
 %\lipsum[21-22]
 
 %\lipsum[23-24]

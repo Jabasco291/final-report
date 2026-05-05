@@ -22,7 +22,7 @@ Autonomous robots operating in dynamic environments require rich spatial represe
 
 This structured approach allows a more contextual view of an environment. Giving a robot more context of its surroundings enables them to perform higher-level tasks. One application for this concept is architectural-related tasks. For example, if a robot can detect objects throughout a building, it can then be used to conduct an inventory of specific items like chairs or pens, which can further be adapted to aid in building management. Another benefit could be assisting architects. A \gls{dsg} produces an abstractable view of a building, which can be used be architects to analyse relational data of the scene to aid them in further development.
 
-The general pipeline for a \gls{dsg} method starts with a metric layer, where the respective sensor data is turned into a volumetric or mesh representation, this forms the metric layer of the graph and is the minimum expected for a \gls{slam} solution. Then, the method will analyse the metric layer to extract information about the scene. The way this is extracted depends on the method and graph structure being used. For example, S-Graphs+ \cite{s_graphs_plus} analyses a point cloud to segment walls using the geometry of the scene, whereas Hydra \cite{hydra} uses neural networks to extract objects from RGB-D data. Each layer is constructed using the data of the layers below to eventually build a graph encompassing the whole scene.
+The general pipeline for a \gls{dsg} method starts with a metric layer, where the respective sensor data is turned into a volumetric or mesh representation, this forms the metric layer of the graph and is the minimum expected for a \gls{slam} solution. Then, the method will analyse the metric layer to extract information about the scene. The way this is extracted depends on the method and graph structure being used. For example, S-Graphs+ \cite{s_graphs_plus} analyses a point cloud to segment walls using the geometry of the scene, whereas Hydra \cite{hydra} uses neural networks to extract objects from \acrshort{rgbd} data. Each layer is constructed using the data of the layers below to eventually build a graph encompassing the whole scene.
 
 \bigskip
 \bigskip
@@ -37,7 +37,7 @@ The general pipeline for a \gls{dsg} method starts with a metric layer, where th
 
 Topologic \cite{topologic} is a software toolkit which integrates several architecturally relevant topological concepts to create hierarchical and topological information-rich 3D representations to aid in the design process. Its goal is to support the creation of the lightest, most understandable models of architectural topology. The method addresses a limitation of conventional \gls{bim} applications (not explicitly modelling the enclosure of space) by using formal topology to represent spatial and material partitions.
 
-However, this system is limited by its requirement for clean geometry input in order to process the data. It relies on a CellComplex, a structure where every spatial cell is perfectly enclosed and shares boundaries with its neighbours. It is rare for real-world sensors like 3D LiDAR and RGB-D cameras to capture data this complete, as it usually results in unstructured noisy data, which naturally creates the need for extra steps between data collection and topological analysis.
+However, this system is limited by its requirement for clean geometry input in order to process the data. It relies on a CellComplex, a structure where every spatial cell is perfectly enclosed and shares boundaries with its neighbours. It is rare for real-world sensors like 3D \acrshort{lidar} and \acrshort{rgbd} cameras to capture data this complete, as it usually results in unstructured noisy data, which naturally creates the need for extra steps between data collection and topological analysis.
 
 \gls{dsg}s bridge this gap by automating the transition from data collection and topological representation. \gls{dsg}s use room segmentation and semantic partitioning techniques to automate transforming raw data into a hierarchical view with semantic understanding which is useful for architectural tasks like inventorying or remote building visualisation.
 
@@ -50,31 +50,31 @@ Recent developments have shifted to hierarchical models which capture semantic r
 
 \subsection{Ancestry Methods}\label{sec:related:ancestry}
 
-Pioneered scene graph work included the 3D Scene Graph \cite{DBLP:journals/corr/abs-1910-02527}, this system takes a 3D mesh and registered panoramic images and constructs a graph that includes semantics, rooms and cameras (location) along with relationships between these entities. However, this is a static system which requires preprocessed input to be ran offline, which eliminates real-time use for tasks such as remote building visualisation. This is a contrast to the candidate methods, as a mandatory requirement specified in section \ref{sec:specification} is to be able to run in real-time.
+Pioneered scene graph work included the 3D Scene Graph \cite{DBLP:journals/corr/abs-1910-02527}, this system takes a 3D mesh and registered panoramic images and constructs a graph that includes semantics, rooms and cameras (location) along with relationships between these entities. However, this is a static system which requires preprocessed input to be ran offline, which eliminates real-time use for tasks such as remote building visualisation. This is a contrast to the candidate methods, as a mandatory requirement specified in Section \ref{sec:specification} is to be able to run in real-time.
 
-The introduction of the open-source library Kimera \cite{DBLP:journals/corr/abs-1910-02490} enabled simultaneous metric semantic mapping. This library extends previous SLAM libraries by enabling 3D mesh reconstruction and semantic labelling. This library became the foundation for systems such as the candidate method Hydra \cite{hydra} which builds on this by implementing higher-level hierarchical perception.
+The introduction of the open-source library Kimera \cite{DBLP:journals/corr/abs-1910-02490} enabled simultaneous metric semantic mapping. This library extends previous \gls{slam} libraries by enabling 3D mesh reconstruction and semantic labelling. This library became the foundation for systems such as the candidate method Hydra \cite{hydra} which builds on this by implementing higher-level hierarchical perception.
 
 
 \section{Theory of Methods}\label{sec:theory}
 
 \subsection{S-Graphs+\cite{s_graphs_plus}}\label{subsec:s-graph}
-S-Graphs+ jointly models a pose graph and a 3D scene graph using a four-layer topological graph consisting of Keyframe, Wall, Room and Floor layers. Unlike the other two methods, its data input is from a 3D LiDAR sensor, which is pre-filtered and downsampled before processing. Robot odometry (used for \gls{slam}) is estimated either from LiDAR measurements or robot encoders, the method is agnostic to which it comes from.
+S-Graphs+ jointly models a pose graph and a 3D scene graph using a four-layer topological graph consisting of Keyframe, Wall, Room and Floor layers. Unlike the other two methods, its data input is from a 3D \acrshort{lidar} sensor, which is pre-filtered and downsampled before processing. Robot odometry (used for \gls{slam}) is estimated either from \acrshort{lidar} measurements or robot encoders, the method is agnostic to which it comes from.
 
-\paragraph{Wall Extraction} \mbox{} \\
+\noindent \textbf{Wall Extraction}
 
-Sequential RANSAC is applied per keyframe to iteratively detect dominant wall planes. RANSAC works like a voting system to decide which points belong to the same flat surface. Only processing keyframes instead of every point of data collected is vital for computational performance. Analysing consecutive scans would likely result in the same detections, therefore processing per keyframe ensures meaningful changes are captured without processing unnecessary data.
+Sequential \gls{ransac} is applied per keyframe to iteratively detect dominant wall planes. \gls{ransac} works like a voting system to decide which points belong to the same flat surface. Only processing keyframes instead of every point of data collected is vital for computational performance. Analysing consecutive scans would likely result in the same detections, therefore processing per keyframe ensures meaningful changes are captured without processing unnecessary data.
 Extracted walls are transformed into global map coordinates and classified into vertical (walls) and horizontal (floor/ceiling) surfaces using their normal vector orientation. As the robot traverses the scene, the Mahalanobis distance, which is a statistical measure that accounts for uncertainty, is used to detect whether a plane is new or has been previously discovered.
 
-\paragraph{Room Segmentation} \mbox{} \\
+\noindent \textbf{Room Segmentation}
 
-This method introduces a novel strategy for segmenting rooms, it is split into two steps: Free-Space Clustering and Room Extraction
+This method introduces a novel strategy for segmenting rooms. It is split into two steps: Free-Space Clustering and Room Extraction.
 
 \noindent Free-Space Clustering: \\
-The free-space clustering algorithm \ref{fig:free-space-alg}, divides the free-space graphs into several clusters corresponding to rooms. The algorithm has three main steps:
+The free-space clustering algorithm (Figure \ref{fig:free-space-alg}), divides the free-space graphs into several clusters corresponding to rooms. The algorithm has three main steps:
 
 \begin{enumerate}
     \item \textbf{Pruning:} Removes boundary nodes which are too close to walls or obstacles. This helps to separate rooms by creating gaps such as doorways to segregate room clusters.
-    \item \textbf{Clustering:} A depth-first search (DFS) is used to find isolated islands of connected nodes, which become clusters. Since doorways were pruned in the previous step, these clusters are assumed to represent rooms.
+    \item \textbf{Clustering:} A \gls{dfs} is used to find isolated islands of connected nodes, which become clusters. Since doorways were pruned in the previous step, these clusters are assumed to represent rooms.
     \item \textbf{Restoration:} Previously removed boundary nodes are re-added to maintain full coverage of free-space. This is vital for actions such as navigation.
 \end{enumerate}
 
@@ -87,12 +87,16 @@ The free-space clustering algorithm \ref{fig:free-space-alg}, divides the free-s
 
 \noindent Room Extraction: \\
 
-This step combines identified clusters with detected walls within that cluster to classify room configurations. Wall planes are categorised by their dominant normal direction and the sign of the normal. This allows the system to see which walls face each other and whether they form rooms. Rooms are classified as either two or four wall rooms. A four-wall room consists of two x and y direction planes near a cluster, which is then verified by checking its width to prevent noise being classified as rooms. If two walls surround a cluster, it is either a partially explored room or a corridor-like structure, for which the same verifications are ran. Data association steps include using room centres to identify whether multiple candidates represent the same room. The Mahalanobis distance is also used in cases where a wall might be observed different from different viewpoints.
+This step combines identified clusters with detected walls within that cluster to classify room configurations. Wall planes are categorised by their dominant normal direction and the sign of the normal. This allows the system to see which walls face each other and whether they form rooms. 
 
-\paragraph{Floor Segmentation} \mbox{} \\
+Rooms are classified as either two or four wall rooms. A four-wall room consists of two x and y direction planes near a cluster, which is then verified by checking its width to prevent noise being classified as rooms. If two walls surround a cluster, it is either a partially explored room or a corridor-like structure, for which the same verifications are ran. Data association steps include using room centres to identify whether multiple candidates represent the same room. The Mahalanobis distance is also used in cases where a wall might be observed different from different viewpoints.
+
+\noindent \textbf{Floor Segmentation}
+
 This module extracts the widest wall planes within the current explored floor which can be used to determine a floor centre. It does this by using all stored walls to compute widths between all x and y direction planes. The largest of each orientation undergo a dot product check between their corresponding normal orientations which removes planes which are outside the structure. When the robot ascends or descends to a different floor, the new wall planes are stored corresponding to the floor level they are on.
 
-\paragraph{Back-End} \mbox{} \\
+\noindent \textbf{Back-End}
+
 The graph is created and optimised in the back-end by minimising errors across all layers, refining both the robot’s pose estimates and the structure representations simultaneously.
 
 
@@ -101,26 +105,29 @@ Hydra combines fast early and mid-level perception processes like local mapping 
 
 The hierarchical graph contains five layers: Metric-Semantic 3D Mesh, Objects and Agents, Places, Rooms, Buildings. When compared to S-Graphs+, Hydra \cite{hydra} represents a much more grounded and actionable representation. The nodes must contain a single parent in the layer above, they can also only connect to adjacent layers, e.g. a chair connects to a room, but not the building. Sibling nodes children are disjoint, meaning furniture in sibling rooms are completely independent of each other. Hydra uses tree decomposition to represent a complex graph as a tree structure by using bags, which contains a set of nodes from the original graph. This stops the complexity exploding with size, bounding it to the most complex local structure for example how many objects in a room.
 
-\paragraph{Mesh}~\\
+\noindent \textbf{Mesh}
 
-A 3D mesh is built using Kimera and VoxBlox by maintaining a voxel-based map within an active window around the robot. Each voxel contains information about the free space and a distribution over semantic labels via Kimera’s \cite{DBLP:journals/corr/abs-1910-02490} Bayesian inference. This map is then converted to a 3D mesh using marching cubes, with a semantic label added to each mesh vertex. Operating within a specified active window is useful for memory usage as it limits the amount of data trying to be processed at once.
+A 3D mesh is built using Kimera \cite{DBLP:journals/corr/abs-1910-02490} and VoxBlo \cite{DBLP:journals/corr/OleynikovaTFNS16} by maintaining a voxel-based map within an active window around the robot. Each voxel contains information about the free space and a distribution over semantic labels via Kimera’s Bayesian inference. This map is then converted to a 3D mesh using marching cubes, with a semantic label added to each mesh vertex. Operating within a specified active window is useful for memory usage as it limits the amount of data trying to be processed at once.
 
-\paragraph{Objects and Agents}~\\
-This layer consists of a robot pose graph obtained using stereo or RGB-D visual inertial odometry. It also segments objects using Euclidean clustering , where vertices with the same semantic label are clustered. Overlapping objects with the same semantic class are merged if the centroid of an object is within another's bounding box.
+\noindent \textbf{Objects and Agents}
 
-\paragraph{Places}~\\
+This layer consists of a robot pose graph obtained using stereo or \acrshort{rgbd} visual inertial odometry. It also segments objects using Euclidean clustering , where vertices with the same semantic label are clustered. Overlapping objects with the same semantic class are merged if the centroid of an object is within another's bounding box.
+
+\noindent \textbf{Places}
 
 A \gls{gvd}, represents a skeleton of free-space. It is created using a Brushfire algorithm by expanding from each mesh surface until touching, which becomes a \gls{gvd} point. Whilst this captures the full shape of the free-space, it is heavy to store due to its voxel representation. So, each voxel is translated to a node with edges to adjacent voxels, groups of nearby nodes are then turned into single “place” nodes which is more memory efficient. Each node contains the position and distance to nearest obstacle from the \gls{gvd} voxel, as well as the minimum distance to the nearest obstacle of all \gls{gvd} voxels that the edge passes through. This information is useful for navigation tasks. As the robot traverses the scene, the algorithm is run after every update to merge newly observed data into the graph of places.
 
-\paragraph{Rooms}~\\
+\noindent \textbf{Rooms}
 
 To identify rooms, persistent homology is used on the graph of places, each room is then given a semantic label using a neural tree. For the semantic labelling, we don’t have a network to identify rooms like we do for objects. Therefore, the semantics of the room must be inferred using contained objects and prior knowledge. Rooms are identified using a 2 stage process, identifying number of rooms, and assigning places to rooms via flood-fill.
-The graph of places is dilated \ref{fig:room_seg} to expose clusters of nodes in the environment (rooms). This works as eventually door nodes will gradually close, naturally sectioning the map into rooms.
+The graph of places is dilated (Figure \ref{fig:room_seg}) to expose clusters of nodes in the environment (which represent rooms). This works as eventually door nodes will gradually close, naturally sectioning the map into rooms.
 
 Persistent Homology is used to compute the best dilation distance for a given graph, this allows room segmentation to be effective across different scene contexts. The Flood-Fill algorithm is then used to assign remaining nodes to the putative room.
 Semantic labels are assigned using a neural tree. The key insight of this process is objects which are typically associated with a room type, e.g. a fridge. Edges may also be used such as a master bedroom being next to a bathroom.
-\paragraph{Loop Closure Detection}~\\
-For each keyframe, it tries to find a past node which matches the latest one using associated Places, Objects and Appearance descriptors. Descriptors can be Hand-Crafted or Learning-based using GNNs. The hand-crafted method counts object labels and uses a histogram of distance to obstacles for each place node, whereas the learning-based method uses bounding boxes, labels and spatial relationships for objects and distance and encodes distances between nodes to make it rotation invariant. Once a match candidate is found, it is verified using a top-down then bottom-up strategy, this makes sure false loop closures are avoided.
+
+\noindent \textbf{Loop Closure Detection}
+
+For each keyframe, it tries to find a past node which matches the latest one using associated Places, Objects and Appearance descriptors. Descriptors can be Hand-Crafted or Learning-based, which uses \gls{gnn}s. The hand-crafted method counts object labels and uses a histogram of distance to obstacles for each place node, whereas the learning-based method uses bounding boxes, labels and spatial relationships for objects and distance and encodes distances between nodes to make it rotation invariant. Once a match candidate is found, it is verified using a top-down then bottom-up strategy, this makes sure false loop closures are avoided.
 
 \begin{figure}[h]
     \centering
@@ -129,7 +136,7 @@ For each keyframe, it tries to find a past node which matches the latest one usi
     \label{fig:room_seg}
 \end{figure}
 
-~\\\paragraph{Optimisation}~\\
+\noindent \textbf{Optimisation}
 
 Odometry drift errors increase as the robot explores more of the scene, therefore the scene graph must be updated often to stay consistent. Hydra uses a sparse sub-graph called a deformation graph which has robot poses, mesh control points and a sparse version of all place nodes, this representation is more efficient than optimising the entire graph every time. Each node in this graph has a local coordinate frame (position + rotation), the optimiser then finds poses which minimise deformation by respecting original measurements but allowing for some flex. You can think of it like the graph edges being rubber bands, the optimiser pulls them to satisfy loop closures while minimising how much it deforms. Once the optimiser is finished, the corrected deformation graph is interpolated to reconstruct the full scene mesh and then reconciles the graph by merging place nodes within 0.4m of each other, and objects with same semantic labels and invading bounding boxes.
 
@@ -137,20 +144,24 @@ Odometry drift errors increase as the robot explores more of the scene, therefor
 
 Clio is the most unique out of the three methods discussed in this project. The other methods build task-agnostic graphs, meaning they capture everything about the scene regardless of the robots intentions. Clio differs from this by creating a task-driven graph which only captures aspects of the scene which is relevant to the tasks the robot needs to carry out. This can be a more efficient representation as it only stores/processes things that are directly relevant, however this means the built graph cannot be used for more general operations.
 
-\paragraph{Task-Aware 3D Scene Understanding}~\\
+\noindent \textbf{Task-Aware 3D Scene Understanding}
+
 A fundamental concept for Clio is task-aware 3D scene understanding. It involves compressing a set of task-agnostic primitives X into a subset of task-relevant concepts X~ that are informative about the tasks Y.  A naive approach would cluster segments based on embedding vectors exceeding a threshold. This would require multiple tuning thresholds such as number of segments or merge similarity, which are brittle and scene-specific. This naturally leads to the \gls{ib} principle, which aims to compress a given signal while preserving the mutual information between the compressed representation and another signal of interest. Clio uses this principle with the context of compressing a scene representation into clusters of relevant objects and regions for a given set of tasks, replacing thresholds with a task-driven objective.
 
-\paragraph{Agglomerative Information Bottlneck}~\\
+\noindent \textbf{\gls{aib}}
+
 \gls{aib} is a bottom-up merging approach, meaning it starts with all individual primitives, then iteratively merges adjacent ones. Cluster merges are decided using a task-driven metric by computing the weight for each possible merge using the Jensen-Shannon divergence \cite{hoyososorio2024representationjensenshannondivergence}, then iteratively merge clusters corresponding to the smallest weight. During each iteration, a value $\delta$\textit{(k)} is calculated as a measure for the loss of information. The algorithm is terminated once the threshold for this value is exceeded which stops losing too much information through abstraction.
 
 Clio develops \gls{aib} further with \gls{iaib} for real-time application. As the graph grows over time, computational complexity must be bound to maintain efficiency. \gls{iaib} handles this by clustering independently for each connected component. For example, objects in different rooms have no edges, so they can’t merge anyway. This method allows $\delta$\textit{(k)} to be calculated independently for each component which maintains accuracy while bounding computational complexity.
 
-\gls{aib} requires defining a relevance probability for each primitive, for which Clio uses CLIP. CLIP embeds both primitives and task descriptions into a shared semantic space. Then a cosine similarity score can give task-relevance per primitive. A null task with threshold a handles irrelevant primitives via pre-pruning before \gls{aib} runs. This is efficient as it reduces the graph size before the merging step which is expensive.
+\gls{aib} requires defining a relevance probability for each primitive, for which Clio uses \gls{clip}. \gls{clip} embeds both primitives and task descriptions into a shared semantic space. Then a cosine similarity score can give task-relevance per primitive. A null task with threshold a handles irrelevant primitives via pre-pruning before \gls{aib} runs. This is efficient as it reduces the graph size before the merging step which is expensive.
 
-\paragraph{Front-End}~\\
-Clio’s front-end constructs task-agnostic object and place primitives using Khronos \cite{schmid2024khronosunifiedapproachspatiotemporal} for 3D mesh reconstruction and primitive extraction. FastSAM and CLIP get semantic segments for each image. Each new segment is greedily associated to the candidate with the highest IoU, with no association creating a new track. Then, each track is reconstructed into a 3D primitive based on all the frames in the track, which gives a more robust semantic embedding than using 1 frame alone. Simultaneously, the background is constructed for each frame, which allows for a dense 3D model to be incrementally constructed with limited computation. To construct place primitives, it follows Hydra’s approach of sparsifying a \gls{gvd} into a graph of places. Then a CLIP embedding vector is used to obtain semantic features for the place.
+\noindent \textbf{Front-End}
 
-\paragraph{Back-End}~\\
+Clio’s front-end constructs task-agnostic object and place primitives using Khronos \cite{schmid2024khronosunifiedapproachspatiotemporal} for 3D mesh reconstruction and primitive extraction. FastSAM and \gls{clip} get semantic segments for each image. Each new segment is greedily associated to the candidate with the highest \gls{iou}, with no association creating a new track. Then, each track is reconstructed into a 3D primitive based on all the frames in the track, which gives a more robust semantic embedding than using one frame alone. Simultaneously, the background is constructed for each frame, which allows for a dense 3D model to be incrementally constructed with limited computation. To construct place primitives, it follows Hydra’s approach of sparsifying a \gls{gvd} into a graph of places. Then a \gls{clip} embedding vector is used to obtain semantic features for the place.
+
+\noindent \textbf{Back-End}
+
 The back-end takes the over-segmented primitives from the front-end and applies \gls{aib} to cluster them based on their task relevance. During object detection, primitives are treated as nodes with edges defined by bounding box overlaps which ensures only physically adjacent segments are candidates for merging. When clustering places, it applies the same principles to the places graph, grouping nodes into semantic regions based on their relevance to tasks. For example a sink and stove clustered into a kitchen region.
 
 
@@ -163,9 +174,9 @@ The back-end takes the over-segmented primitives from the front-end and applies 
 \toprule
 \textbf{Method} & \textbf{Layers No.} & \textbf{Layer Names} & \textbf{Data Approach} & \textbf{Data Input} & \textbf{Semantics} \\ 
 \midrule
-\textbf{S-Graphs+}   & 4          & Keyframes, Walls, Rooms, Floors          & Geometric & LiDAR & -         \\
-\textbf{Hydra}   & 5       & Metric-Semantic 3D Mesh, Objects and Agents, Places, Rooms, Buildings & Spatial & RGB-D & Closed-Set        \\
-\textbf{Clio}   & 5       & 3D Mesh, Objects and Agents, Places, Rooms, Buildings  & Task-Driven & RGB-D & Open-Set        \\
+\textbf{S-Graphs+}   & 4          & Keyframes, Walls, Rooms, Floors          & Geometric & \acrshort{lidar} & -         \\
+\textbf{Hydra}   & 5       & Metric-Semantic 3D Mesh, Objects and Agents, Places, Rooms, Buildings & Spatial & \acrshort{rgbd} & Closed-Set        \\
+\textbf{Clio}   & 5       & 3D Mesh, Objects and Agents, Places, Rooms, Buildings  & Task-Driven & \acrshort{rgbd} & Open-Set        \\
 \bottomrule
 \end{tabular}
 \end{table}
