@@ -106,9 +106,6 @@ As stated above, the evaluation criteria aimed to address three sections: Metric
         & Front-end / Back-end Timing & Measures run-time performance \\
         & Real-time Capability        & Assesses viability for real-world deployment \\
     \midrule
-    \textbf{Architectural Suitability}
-        & Qualitative Assessment  & Evaluates overall usefulness for inventorying, remote visualisation and navigation \\
-    \bottomrule
     \end{tabular}
 }
 \end{table}
@@ -210,9 +207,9 @@ PointCloud2 data is used by S-Graphs+ while the image data is used by Hydra and 
 
 \subsection{Real-World Data Pipeline}\label{sec:real-data-pipeline}
 
-To record the HCCR lab for real-world data deployment, a handheld ZED camera powered by a NVIDIA Jetson AGX Orin was used. This recording method was chosen due to its portability and ease of setup. The recording was then parsed into RGB and Depth frames with pose estimates (using code provided by PhD Student Emin Safa Tok). The frames were then converted into a rosbag using a custom script, which takes the data and sequentially writes them as rosbag topics . This rosbag could then be processed by the best-performing method (Hydra, as discussed in Section \ref{sec:res:best-method}).
+To record the HCCR lab for real-world data deployment, a handheld ZED camera powered by a NVIDIA Jetson AGX Orin was used. This recording method was chosen due to its portability and ease of setup. The recording was then parsed into RGB and Depth frames with pose estimates (using code provided by PhD Student Emin Safa Tok). The frames were then converted into a ros2 bag using a conversion script. Generative AI Claude (Anthropic) \cite{Claude2024} was used to help develop this script, justification is outlined in Section \pageref{ai-use}. The script takes the data and sequentially writes them as rosbag topics . This rosbag could then be processed by the best-performing method (Hydra, as discussed in Section \ref{sec:res:best-method}).
 
-Hydra expects both a robot frame and odometry as TF transforms instead of raw odometry poses. Since the real-world data was recorded using a ZED camera, it does not have a defined robot frame. This meant that during deployment, a static transform had to be published to define this frame. As well as this, a custom node had to be run to republish the odometry data as TF transforms.
+Hydra expects both a robot frame and odometry as TF transforms instead of raw odometry poses. Since the real-world data was recorded using a ZED camera, it does not have a defined robot frame. This meant that during deployment, a static transform had to be published to define this frame. As well as this, a custom node, which was developed with assistance from Generative AI Claude (Anthropic) \cite{Claude2024}, justification is outlined in Section \pageref{ai-use}, had to be run to republish the odometry data as TF transforms.
 
 \subsection{Evaluation Scripts}\label{sec:sim-eval-scripts}
 

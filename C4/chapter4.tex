@@ -69,7 +69,7 @@ The following figures show the 3D Scene Graph output for each of the three metho
 \textbf{Method} & \multicolumn{3}{c|}{\textbf{Total Nodes}} & \multicolumn{3}{c|}{\textbf{Room Nodes}} & \multicolumn{3}{c}{\textbf{Object Nodes}} \\
  & Avg & Std & CV & Avg & Std & CV & Avg & Std & CV \\
 \midrule
-S-Graphs+ & 95.40 & 0.89 & 0.01 & 1.00 & 0.00 & 0.00 & --- & --- & --- \\
+S-Graphs+ & 95.40 & 0.89 & 0.01 & 13.40 & 0.89 & 0.07 & --- & --- & --- \\
 Hydra     & 1205.0 & 15.40 & 0.01 & 3.00 & 1.67 & 0.56 & 65.40 & 3.26 & 0.05 \\
 Clio      & 1972.0 & 25.67 & 0.01 & 12.80 & 2.32 & 0.18 & 2.20 & 0.40 & 0.18 \\
 \bottomrule
@@ -90,7 +90,7 @@ The largest gap in performance is object detection. With S-Graphs+ not containin
 
 \begin{table}[H]
 \centering
-\caption{Room Recognition Statistics. \textbf{Best results in bold.}}
+\caption{Room Recognition Statistics. \textbf{Best results in bold.}. Per-Run Statistics in Appendix Table \ref{tab:raw_room_results}.}
 \label{tab:room_recognition_transposed}
 \begin{tabular}{l | ccc | ccc | ccc}
 \toprule
@@ -128,7 +128,7 @@ Clio      & 0.00 & 0.00 & NaN  & 0.00 & 0.00 & NaN  & 0.00 & 0.00 & NaN  \\
 
 \begin{table}[H]
 \centering
-\caption{Object Spatial Accuracy. \textbf{Best results in bold.}}
+\caption{Object Spatial Accuracy. \textbf{Best results in bold.} Per-Run Statistics in Appendix Tables \ref{tab:raw_spatial_accuracy} and \ref{tab:object_drift_breakdown}.}
 \label{tab:object_spatial_revised}
 \begin{tabular}{l | ccc | ccc | ccc}
 \toprule
@@ -171,7 +171,7 @@ Clio  & 2.20 & 0.45 & 0.20 \\
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{figures/confusion_matrix_mean_norm.png}
-    \caption{Hydra vs Ground Truth  Semantic Labels: Normalised Confusion Matrix}
+    \caption{Hydra vs Ground Truth  Semantic Labels: Normalised Confusion Matrix. Mean Confusion Matrix in Appendix Figure \ref{fig:app:semantics:hydra_cmatrix}.}
     \label{fig:cmatrix}
 \end{figure}
 
@@ -185,7 +185,7 @@ There was no confusion matrix generated for Clio due to the insufficient object 
 
 \begin{table}[H]
 \centering
-\caption{System Timing Comparison across Stages (Seconds). \textbf{Best results in bold.}}
+\caption{System Timing Comparison across Stages (Seconds). \textbf{Best results in bold.} Per-Run Statistics in Appendix Table \ref{tab:raw_timings_final}.}
 \label{tab:timing_transposed}
 \begin{tabular}{l | ccc | ccc | c}
 \toprule
