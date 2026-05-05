@@ -205,6 +205,44 @@ TFMessage (static)  & ---              & All methods \\
 
 PointCloud2 data is used by S-Graphs+ while the image data is used by Hydra and Clio. Odometry and TF is used throughout all methods for localisation.
 
+\subsection{Method parameters}\label{sec:sim-method-params}
+
+\noindent \textbf{Hydra}
+
+The original Hydra parameters were not setup for a scene with such varying room-types like  the custom office scene, where small offices or bathrooms neighbour a large office space. This led to a massive under-segmentation of the scene due to dilation distance being almost the same size as these smaller rooms. For example, the uhumans2 parameters include a 0.5m and 1.2m min and max dilation respectively, along with a 10 min room size.
+
+A variety of parameters were tested to try and fit the behaviour to the custom office scene structure. After testing six sets of parameters, it was decided to stick with the parameters found in reachy\_house.yaml. The most notable are shown in Figure \ref{fig:hydra-params}. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/hydra_params.png}
+    \caption{Snapshot of main Hydra parameters which were tuned to better suit the custom office scene.}
+    \label{fig:hydra-params}
+\end{figure}
+
+A min and max dilation of 0.15 and 0.3 respectively was chosen to ensure the smaller rooms do not get swallowed when the graph of places is dilated as discussed in \ref{subsec:hydra}. 
+
+Min room size was set to 5, which lowers from larger scenes like uhumans2, this was chosen to give the smaller rooms the best chance to be instantiated rather than being swallowed by the large open office. 
+
+The plateau ratio defines how strict the system is about committing to segmentation earlier. This was lowered in order to encourage creating rooms before they get merged into the large space.
+
+\noindent \textbf{Clio}
+
+At the beginning, Clio was struggling to segment the different rooms and had a dictator region behaviour (where every region would be merged into a large node). This was likely due to a mismatch in between the scenes Clio was originally tuned for compared to the custom office scene.
+
+Iterative testing helped to tune the Clio parameters to better suit the custom office scene. The final values were chosen based on observed improvements to segmentation and detection behaviour.
+
+Voxel size was increased from 0.10m to 0.15m. This traded reconstruction quality to reduce the likelihood of objects being represented as fragmented instances. 
+
+The FastSAM confidence threshold was lowered to allow more candidate masks to be accepted per frame. In a dataset with varying coverage of different regions due to size, like a smaller bathroom, this helps to give a greater chance to produce detection that reach the \acrshort{clip} embedding stage.
+
+The score threshold for region detection was reduced in a similar way. This allowed regions that are less-visited or covered resulting in smaller embedding similarity scores to be recognised.
+
+Object cluster size was adjusted to filter out small masks, which are likely noise and irrelevant views, and large masks, which occur when background regions merge into a single cluster.
+
+These Clio parameters ended up prioritising recall over precision, this is useful in architectural tasks as its better for a region to be over-detected than missed.
+
+
 \subsection{Real-World Data Pipeline}\label{sec:real-data-pipeline}
 
 To record the HCCR lab for real-world data deployment, a handheld ZED camera powered by a NVIDIA Jetson AGX Orin was used. This recording method was chosen due to its portability and ease of setup. The recording was then parsed into RGB and Depth frames with pose estimates (using code provided by PhD Student Emin Safa Tok). The frames were then converted into a ros2 bag using a conversion script. Generative AI Claude (Anthropic) \cite{Claude2024} was used to help develop this script, justification is outlined in Section \pageref{ai-use}. The script takes the data and sequentially writes them as rosbag topics . This rosbag could then be processed by the best-performing method (Hydra, as discussed in Section \ref{sec:res:best-method}).
