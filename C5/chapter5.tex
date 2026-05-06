@@ -25,6 +25,8 @@ After analysing the results, it was determined in Section \ref{sec:res:best-meth
 
 In comparison, S-Graphs+ was marginally superior at room segmentation, however lacks semantic understanding of the scene. Clio demonstrated strong metric-semantic room segmentation, however it was found to really struggle to instantiate object primitives, likely due to the lack of object frame captures provided by the differential drive and fixed camera used for the dataset. This was contrasted with Hydra which adapted comfortably to the perspective change. As well as this, despite expected behaviour on its example dataset, Clio had to be processed at 0.25 playback speed on the custom office dataset to prevent missing frames or crashing, meaning it was labelled incapable of real-time usage. This nullified Clio as a suitable candidate as it failed one of the mandatory requirements set out in Section \ref{sec:spec:mandatory}.
 
+As a result of this detemermination, Hydra was deployed on real-world data encompassing the \gls{hccr} laboratory (result shown in Figure \ref{fig:full-mesh}), which proved its capability to be deployed on noisy real data and construct a 3D scene graph of an environment.
+
 There were limitations to this evaluation. Most notably a single environment prevented comparisons over different deployment contexts such as office vs hospital. Another key limitation identified was the data collection method, which limited the coverage and views of objects, likely resulting in the Clio bottleneck observed in Section \ref{sec:disc-clio-rec}.
 
 %\lipsum[37-38]
